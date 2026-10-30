@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Panel de eventos · Perpetuo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/comun.css">
+<style>
+body.panel{ background:var(--papel-2); }
+
+/* ---------------- ENTRAR ---------------- */
+.entrar{ position:relative; z-index:1; min-height:100vh; display:grid; place-items:center; padding:20px; }
+.entrar form{ position:relative; z-index:1; width:100%; max-width:400px; background:var(--papel); border-radius:6px; padding:34px 30px 30px; box-shadow:0 40px 70px -28px rgba(0,0,0,.55); animation:entra .6s var(--ease-out) both; }
+.entrar .bicho{ width:64px; margin:-78px 0 14px auto; transform:rotate(8deg); }
+.entrar .logo{ color:var(--tinta); width:140px; }
+.entrar h1{ margin:14px 0 4px; font-size:34px; font-weight:900; letter-spacing:-.04em; line-height:1; }
+.entrar p{ margin:0 0 22px; color:var(--gris); }
+.entrar .btn{ width:100%; margin-top:4px; }
+.demo-aviso{ margin-top:16px; padding:10px 12px; border-radius:3px; background:var(--lima); font-size:13.5px; font-weight:600; }
+@keyframes entra{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:none; } }
+
+/* ---------------- PANEL ---------------- */
+.barra{ position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:14px; padding:12px 22px; background:var(--tinta); color:var(--papel); }
+.barra .logo{ width:116px; }
+.barra .que{ font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px 2px; border:1.5px solid rgba(250,246,241,.4); border-radius:999px; }
+.barra .esp{ flex:1; }
+.barra a, .barra button{ background:none; border:0; cursor:pointer; color:var(--papel); font-weight:700; font-size:14px; opacity:.8; text-decoration:none; }
+.barra a:hover, .barra button:hover{ opacity:1; }
+.modo-demo{ font-size:12px; font-weight:800; background:var(--lima); color:var(--tinta); padding:3px 9px; border-radius:999px; }
+
+.app{ display:grid; grid-template-columns:300px minmax(0,1fr); min-height:calc(100vh - 56px); }
+@media (max-width:900px){ .app{ grid-template-columns:1fr; } }
+.lado{ position:sticky; top:56px; height:calc(100vh - 56px); overflow-y:auto; border-right:1px solid var(--linea); background:var(--papel); padding:20px 16px; }
+@media (max-width:900px){ .lado{ position:static; height:auto; border-right:0; border-bottom:1px solid var(--linea); } }
+.lado .btn{ width:100%; }
+.lado h2{ margin:24px 4px 10px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
+.evs{ list-style:none; margin:0; padding:0; display:grid; gap:6px; }
+.ev{ display:grid; grid-template-columns:44px 1fr; gap:12px; align-items:center; width:100%; text-align:left; padding:9px 10px; border:0; border-radius:6px; background:transparent; cursor:pointer;
+  transition:background-color .15s, transform .2s var(--ease-out); }
+.ev:hover{ background:var(--papel-2); }
+.ev.sel{ background:var(--papel-3); }
+.ev .chip{ width:44px; height:48px; border-radius:4px; background:var(--c); color:var(--ct); display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1; text-transform:uppercase; }
+.ev .chip b{ font-size:20px; font-weight:900; letter-spacing:-.04em; }
+.ev .chip span{ font-size:10px; font-weight:800; letter-spacing:.08em; margin-top:2px; }
+.ev h3{ margin:0; font-size:15px; font-weight:800; letter-spacing:-.01em; line-height:1.2; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.ev small{ display:flex; gap:8px; align-items:center; margin-top:3px; font-size:12.5px; font-weight:600; color:var(--gris); }
+.pill{ display:inline-block; font-size:11px; font-weight:800; letter-spacing:.04em; padding:2px 8px; border-radius:999px; background:var(--papel-3); color:var(--tinta); text-transform:uppercase; }
+.pill.publicado, .pill.pagado{ background:var(--lima); }
+.pill.borrador, .pill.pendiente{ background:var(--papel-3); }
+.pill.oculto, .pill.expirado{ background:var(--tinta); color:var(--papel); }
+.pill.gratis{ background:#cfe0f3; color:var(--azul); }
+.pill.cortesía{ background:#f6d3cb; color:#8a2b19; }
+.pill.pasado{ background:transparent; box-shadow:inset 0 0 0 1.5px var(--linea); color:var(--gris); }
+
+.principal{ padding:26px 32px 120px; min-width:0; }
+@media (max-width:560px){ .principal{ padding:20px 16px 120px; } }
+.cabeza{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px 20px; margin-bottom:20px; }
+.cabeza h1{ margin:0; font-size:clamp(28px,3.6vw,40px); font-weight:900; letter-spacing:-.045em; line-height:1; }
+.cabeza .sub{ margin-top:6px; color:var(--gris); font-weight:600; font-size:14px; }
+.tabs{ display:flex; gap:4px; background:var(--papel-3); padding:4px; border-radius:999px; }
+.tabs button{ border:0; background:transparent; cursor:pointer; padding:8px 16px; border-radius:999px; font-weight:800; font-size:14px; transition:background-color .2s; }
+.tabs button[aria-selected="true"]{ background:var(--tinta); color:var(--papel); }
+
+.stats{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:12px; margin-bottom:24px; }
+@media (max-width:700px){ .stats{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+.stat{ background:var(--papel); border-radius:6px; padding:14px 16px; }
+.stat small{ display:block; font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
+.stat b{ display:block; margin-top:4px; font-size:28px; font-weight:900; letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums; }
+.stat .barra-cupo{ height:4px; border-radius:99px; background:var(--papel-3); margin-top:10px; overflow:hidden; }
+.stat .barra-cupo i{ display:block; height:100%; background:var(--rojo); border-radius:99px; transition:width .8s var(--ease-out); }
+
+/* formulario */
+.editor{ display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:28px; align-items:start; }
+@media (max-width:1180px){ .editor{ grid-template-columns:1fr; } }
+.bloque{ background:var(--papel); border-radius:6px; padding:22px 22px 6px; margin-bottom:16px; }
+.bloque h2{ margin:0 0 16px; font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--azul); }
+.fila{ display:grid; grid-template-columns:repeat(var(--n,2), minmax(0,1fr)); gap:0 14px; }
+@media (max-width:640px){ .fila{ grid-template-columns:1fr; } }
+.ayuda{ display:block; margin-top:5px; font-size:12.5px; color:var(--gris); }
+.segmento{ display:flex; gap:4px; background:var(--papel-2); padding:4px; border-radius:999px; width:max-content; max-width:100%; flex-wrap:wrap; }
+.segmento label{ cursor:pointer; }
+.segmento input{ position:absolute; opacity:0; pointer-events:none; }
+.segmento span{ display:block; padding:8px 14px; border-radius:999px; font-weight:800; font-size:14px; transition:background-color .2s; }
+.segmento input:checked + span{ background:var(--tinta); color:var(--papel); }
+.segmento input:focus-visible + span{ outline:3px solid var(--azul); outline-offset:2px; }
+.signos, .colores{ display:flex; gap:10px; flex-wrap:wrap; }
+.signos label, .colores label{ cursor:pointer; position:relative; }
+.signos input, .colores input{ position:absolute; opacity:0; pointer-events:none; }
+.signos .op{ display:grid; place-items:center; width:70px; height:76px; border-radius:6px; background:var(--papel-2); box-shadow:inset 0 0 0 2px transparent; transition:box-shadow .2s, background-color .2s; }
+.signos .op .bicho{ width:34px; }
+.signos .op .bicho *{ animation-play-state:paused; }
+.signos input:checked + .op{ box-shadow:inset 0 0 0 2px var(--tinta); background:var(--papel-3); }
+.signos input:checked + .op .bicho *{ animation-play-state:running; }
+.colores .op{ display:block; width:44px; height:44px; border-radius:50%; background:var(--c); box-shadow:0 0 0 3px var(--papel), 0 0 0 3px transparent; transition:box-shadow .2s, transform .2s var(--ease-spring); }
+.colores input:checked + .op{ box-shadow:0 0 0 3px var(--papel), 0 0 0 5px var(--tinta); transform:scale(1.06); }
+.signos input:focus-visible + .op, .colores input:focus-visible + .op{ outline:3px solid var(--azul); outline-offset:3px; }
+.imagen{ display:grid; grid-template-columns:120px 1fr; gap:14px; align-items:center; }
+.formato{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; padding:6px; border:1.5px solid var(--linea); border-bottom:0; border-radius:3px 3px 0 0; background:var(--papel-2); }
+.formato button{ min-width:34px; height:30px; padding:0 9px; border:0; border-radius:4px; background:transparent; cursor:pointer; font-size:14px; transition:background-color .15s; }
+.formato button:hover{ background:var(--papel-3); }
+.formato small{ margin-left:auto; padding-right:6px; font-size:12px; color:var(--gris); }
+.formato + .input{ border-radius:0 0 3px 3px; }
+.invs{ display:grid; gap:10px; margin-bottom:14px; }
+.inv{ display:grid; grid-template-columns:64px 1fr auto; gap:14px; align-items:center; padding:10px; border-radius:6px; background:var(--papel-2); animation:entra .3s var(--ease-out); }
+.inv-foto{ position:relative; width:64px; height:64px; border-radius:50%; cursor:pointer; background:var(--papel-3) center 25%/cover no-repeat; display:grid; place-items:center;
+  font-weight:900; font-size:20px; color:var(--gris); overflow:hidden; transition:box-shadow .2s; }
+.inv-foto:hover{ box-shadow:0 0 0 3px var(--azul); }
+.inv-foto::after{ content:"Foto"; position:absolute; inset:auto 0 0; padding:3px 0 5px; background:rgba(13,17,20,.6); color:var(--papel); font-size:10.5px; font-weight:800; text-align:center; opacity:0; transition:opacity .2s; }
+.inv-foto:hover::after{ opacity:1; }
+.inv-foto input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+.inv-foto.cargando{ animation:late 1s ease-in-out infinite; }
+.inv-campos{ display:grid; gap:6px; min-width:0; }
+.inv-campos .input{ padding:9px 11px; font-size:15px; }
+.inv-campos .input:first-child{ font-weight:800; }
+.inv-quitar{ width:34px; height:34px; border:0; border-radius:50%; background:transparent; cursor:pointer; font-size:22px; line-height:1; color:var(--gris); }
+.inv-quitar:hover{ background:var(--papel-3); color:var(--rojo); }
+.estado-con{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; margin-bottom:16px; padding:12px 16px; border-radius:6px; background:var(--papel); font-size:14px; font-weight:600; }
+.estado-con .luz{ display:inline-flex; align-items:center; gap:7px; }
+.estado-con .luz::before{ content:""; width:9px; height:9px; border-radius:50%; background:var(--gris); }
+.estado-con .ok::before{ background:#5d9b1c; } .estado-con .medio::before{ background:#e0a100; } .estado-con .mal::before{ background:var(--rojo); }
+.estado-con a{ margin-left:auto; color:var(--azul); font-weight:800; }
+.estado-con.alerta{ background:var(--tinta); color:var(--papel); }
+.estado-con.alerta a{ color:var(--lima); }
+.imagen .mini{ width:120px; aspect-ratio:16/9; border-radius:4px; background:var(--papel-3) center/cover no-repeat; display:grid; place-items:center; font-size:12px; font-weight:700; color:var(--gris); text-align:center; }
+.imagen .acciones{ display:flex; flex-wrap:wrap; gap:8px; }
+.subir{ position:relative; overflow:hidden; }
+.subir input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+
+/* vista previa */
+.previa{ position:sticky; top:76px; }
+.previa > small{ display:block; margin:0 0 10px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
+.previa .marco{ background:var(--azul); border-radius:6px; padding:30px 18px 22px; position:relative; overflow:hidden; }
+.pv{ position:relative; display:grid; grid-template-columns:72px 1fr; background:var(--papel); border-radius:6px; filter:drop-shadow(0 14px 18px rgba(0,0,0,.3)); }
+.pv .f{ background:var(--c); color:var(--ct); border-radius:6px 0 0 6px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:12px 4px; text-transform:uppercase; line-height:1; }
+.pv .f span{ font-size:10px; font-weight:800; letter-spacing:.1em; }
+.pv .f b{ font-size:34px; font-weight:900; letter-spacing:-.06em; margin:3px 0; }
+.pv .cu{ padding:14px 14px 12px; min-width:0; }
+.pv .cu small{ font-size:11.5px; font-weight:800; color:var(--azul); }
+.pv .cu h3{ margin:3px 0 0; font-size:19px; font-weight:900; letter-spacing:-.035em; line-height:1.05; word-wrap:break-word; }
+.pv .cu .pr{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:9px; border-top:2px dashed rgba(13,17,20,.2); font-weight:900; font-size:17px; letter-spacing:-.03em; }
+.pv .cu .pr span{ font-size:12px; font-weight:800; padding:4px 10px; border-radius:999px; background:var(--tinta); color:var(--papel); letter-spacing:0; }
+.pv-signo{ position:absolute; right:22px; top:-2px; width:40px; z-index:2; }
+.previa .borr{ position:absolute; top:12px; left:14px; font-family:var(--mano); font-size:24px; color:var(--lima); transform:rotate(-4deg); }
+.previa .ir{ display:inline-block; margin-top:12px; font-weight:700; font-size:14px; color:var(--azul); }
+
+.guardar{ position:fixed; z-index:15; left:300px; right:0; bottom:0; display:flex; align-items:center; gap:14px; justify-content:flex-end; padding:14px 32px;
+  background:rgba(250,246,241,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border-top:1px solid var(--linea); transform:translateY(100%); transition:transform .4s var(--ease-out); }
+.guardar.on{ transform:none; }
+.guardar .cambios{ margin-right:auto; font-weight:700; font-size:14px; color:var(--gris); display:flex; align-items:center; gap:8px; }
+.guardar .cambios::before{ content:""; width:8px; height:8px; border-radius:50%; background:var(--rojo); animation:late 1.4s ease-in-out infinite; }
+@keyframes late{ 50%{ opacity:.3; } }
+@media (max-width:900px){ .guardar{ left:0; padding:12px 16px; } }
+
+/* asistentes */
+.herr{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
+.herr .input{ max-width:280px; padding:10px 12px; font-size:15px; }
+.herr .esp{ flex:1; }
+.tabla-wrap{ background:var(--papel); border-radius:6px; overflow:auto; }
+table{ width:100%; border-collapse:collapse; font-size:14.5px; }
+th{ text-align:left; font-size:11.5px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--gris); padding:12px 14px; border-bottom:1.5px solid var(--tinta); white-space:nowrap; }
+td{ padding:11px 14px; border-bottom:1px solid var(--linea); vertical-align:middle; }
+tr:last-child td{ border-bottom:0; }
+td.folio{ font-weight:900; letter-spacing:.03em; color:var(--rojo); white-space:nowrap; }
+td .quien b{ display:block; font-weight:800; }
+td .quien span{ color:var(--gris); font-size:13.5px; }
+td.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+td small{ color:var(--gris); font-size:12.5px; }
+tr.vino td{ background:rgba(195,215,58,.14); }
+.marca-asis{ display:inline-flex; width:30px; height:30px; border-radius:50%; border:1.5px solid var(--linea); background:#fff; cursor:pointer; align-items:center; justify-content:center; transition:background-color .15s, transform .2s var(--ease-spring); }
+.marca-asis svg{ width:16px; height:16px; opacity:0; }
+.marca-asis[aria-pressed="true"]{ background:var(--lima); border-color:var(--lima); transform:scale(1.08); }
+.marca-asis[aria-pressed="true"] svg{ opacity:1; }
+.link-btn{ background:none; border:0; cursor:pointer; font-weight:700; font-size:13.5px; color:var(--azul); text-decoration:underline; text-underline-offset:3px; white-space:nowrap; }
+.vacio-t{ padding:40px 20px; text-align:center; color:var(--gris); }
+.vacio-t .bicho{ width:52px; margin:0 auto 10px; }
+
+.cortesia{ background:var(--papel); border-radius:6px; padding:18px 18px 2px; margin-bottom:14px; animation:entra .35s var(--ease-out); }
+.cortesia .fila{ --n:4; align-items:end; }
+@media (max-width:900px){ .cortesia .fila{ --n:1; } }
+
+.nav-resumen{ display:flex; align-items:center; gap:12px; width:100%; margin-bottom:10px; padding:11px 12px; border:0; border-radius:6px; background:transparent; cursor:pointer;
+  font-weight:800; font-size:15px; text-align:left; transition:background-color .15s; }
+.nav-resumen:hover{ background:var(--papel-2); }
+.nav-resumen.sel{ background:var(--papel-3); }
+.nav-resumen svg{ width:20px; height:20px; }
+
+/* ---------------- RESUMEN ---------------- */
+.stat .delta{ display:inline-block; margin-top:8px; font-size:12.5px; font-weight:800; color:var(--gris); }
+.stat .delta.sube{ color:#3f6b12; } .stat .delta.baja{ color:#a33a24; }
+.stat .nota{ display:block; margin-top:8px; font-size:12.5px; font-weight:600; color:var(--gris); }
+.stat.hero{ background:var(--tinta); color:var(--papel); }
+.stat.hero small, .stat.hero .nota{ color:rgba(250,246,241,.65); }
+.stat.hero b{ color:var(--lima); }
+.stat.hero .delta.sube{ color:var(--lima); } .stat.hero .delta.baja{ color:#ff8a73; }
+.tablero{ display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start; }
+@media (max-width:1180px){ .tablero{ grid-template-columns:1fr; } }
+.tarjeta{ background:var(--papel); border-radius:6px; padding:20px 22px 22px; min-width:0; }
+.tarjeta-cab{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-bottom:18px; }
+.tarjeta h2{ margin:0; font-size:18px; font-weight:900; letter-spacing:-.025em; }
+.tarjeta h2 small{ display:block; margin-top:2px; font-size:13px; font-weight:600; letter-spacing:0; color:var(--gris); }
+.segmento.chico span{ padding:6px 12px; font-size:13px; }
+
+/* gráfica de barras por día */
+.grafica{ position:relative; display:grid; grid-template-columns:auto 1fr; gap:0 10px; }
+.g-eje{ position:relative; height:220px; min-width:34px; font-size:11.5px; font-weight:600; color:var(--gris); text-align:right; font-variant-numeric:tabular-nums; }
+.g-eje span{ position:absolute; right:0; transform:translateY(50%); line-height:1; white-space:nowrap; }
+.g-area{ position:relative; height:220px; border-bottom:1.5px solid var(--tinta); }
+.g-area .linea{ position:absolute; left:0; right:0; height:1px; background:var(--linea); }
+.g-barras{ position:absolute; inset:0; display:flex; align-items:flex-end; gap:2px; }
+.g-col{ flex:1; height:100%; display:flex; align-items:flex-end; cursor:default; min-width:0; }
+.g-col i{ display:block; width:100%; max-width:26px; margin:0 auto; background:var(--azul); border-radius:4px 4px 0 0; min-height:0;
+  transform-origin:bottom; animation:crece .7s var(--ease-out) both; animation-delay:calc(var(--n) * 12ms); transition:background-color .15s; }
+.g-col:hover i, .g-col.on i{ background:var(--rojo); }
+@keyframes crece{ from{ transform:scaleY(0); } }
+.g-x{ grid-column:2; display:flex; justify-content:space-between; margin-top:7px; font-size:11.5px; font-weight:600; color:var(--gris); }
+.g-tip{ position:absolute; z-index:5; pointer-events:none; transform:translate(-50%, calc(-100% - 10px)); background:var(--tinta); color:var(--papel); border-radius:6px; padding:8px 11px;
+  font-size:13px; line-height:1.35; white-space:nowrap; box-shadow:0 10px 20px -8px rgba(0,0,0,.4); opacity:0; transition:opacity .12s; }
+.g-tip.on{ opacity:1; }
+.g-tip b{ display:block; font-size:15px; font-weight:900; }
+.g-vacio{ display:grid; place-items:center; height:220px; color:var(--gris); font-weight:600; font-size:14px; text-align:center; }
+
+/* ocupación de próximos */
+.ocup{ list-style:none; margin:0; padding:0; display:grid; gap:4px; }
+.ocup button{ display:grid; grid-template-columns:40px 1fr auto; gap:12px; align-items:center; width:100%; padding:9px 8px; border:0; border-radius:6px; background:transparent; cursor:pointer; text-align:left; transition:background-color .15s; }
+.ocup button:hover{ background:var(--papel-2); }
+.ocup .chip{ width:40px; height:44px; border-radius:4px; background:var(--c); color:var(--ct); display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1; text-transform:uppercase; }
+.ocup .chip b{ font-size:18px; font-weight:900; letter-spacing:-.04em; } .ocup .chip span{ font-size:9.5px; font-weight:800; letter-spacing:.08em; margin-top:2px; }
+.ocup h3{ margin:0 0 6px; font-size:14.5px; font-weight:800; line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ocup .pista{ height:6px; border-radius:99px; background:var(--papel-3); overflow:hidden; }
+.ocup .pista i{ display:block; height:100%; border-radius:99px; background:var(--azul); transform-origin:left; animation:llena .9s var(--ease-out) both; }
+.ocup .lleno .pista i{ background:var(--rojo); }
+@keyframes llena{ from{ transform:scaleX(0); } }
+.ocup .cifra{ text-align:right; font-size:13px; font-weight:600; color:var(--gris); white-space:nowrap; font-variant-numeric:tabular-nums; }
+.ocup .cifra b{ display:block; font-size:15px; font-weight:900; color:var(--tinta); }
+
+/* actividad */
+.feed{ list-style:none; margin:0; padding:0; }
+.feed li{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:11px 0; border-bottom:1px solid var(--linea); font-size:14px; animation:entra .4s var(--ease-out) both; animation-delay:calc(var(--n) * 40ms); }
+.feed li:last-child{ border-bottom:0; }
+.feed .punto{ width:10px; height:10px; border-radius:50%; background:var(--c); box-shadow:0 0 0 3px var(--papel), 0 0 0 4px var(--linea); }
+.feed b{ font-weight:800; }
+.feed small{ display:block; color:var(--gris); font-size:12.5px; margin-top:1px; }
+.feed .monto{ font-weight:900; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.vacio-chico{ padding:24px 0 8px; text-align:center; color:var(--gris); font-size:14px; }
+</style>
+</head>
+<body>
+<!-- ENTRAR -->
+<div class="entrar grano" id="entrar" style="background:var(--fondo)">
+  <form id="fEntrar" novalidate>
+    <span data-b="punto"></span>
+    <span class="logo" role="img" aria-label="Perpetuo"></span>
+    <h1>Panel de eventos</h1>
+    <p>Crea eventos, mira quién compró y manda cortesías.</p>
+    <label class="field" data-f="clave"><span class="lbl">Clave</span>
+      <input class="input" name="clave" type="password" autocomplete="current-password" required><span class="msg" id="msgClave">Esa no es la clave.</span></label>
+    <button class="btn" type="submit" id="bEntrar">Entrar</button>
+    <p class="demo-aviso" id="avisoDemo" hidden>Modo demostración: sin backend conectado. La clave es <b>perpetuo</b> y todo se guarda solo en este navegador.</p>
+  </form>
+</div>
+
+<!-- PANEL -->
+<div id="panel" hidden>
+  <header class="barra">
+    <span class="logo" role="img" aria-label="Perpetuo"></span><span class="que">Panel</span>
+    <span class="modo-demo" id="chipDemo" hidden>Demostración</span>
+    <span class="esp"></span>
+    <a href="./" target="_blank" rel="noopener">Ver sitio ↗</a>
+    <button type="button" id="salir">Salir</button>
+  </header>
+  <div class="app">
+    <aside class="lado">
+      <button class="nav-resumen" type="button" id="navResumen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Resumen</button>
+      <button class="btn" type="button" id="nuevo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo evento</button>
+      <h2>Próximos</h2><ul class="evs" id="evsProx"></ul>
+      <h2 id="hPas">Pasados</h2><ul class="evs" id="evsPas"></ul>
+    </aside>
+    <main class="principal" id="principal"></main>
+  </div>
+  <div class="guardar" id="barraGuardar">
+    <span class="cambios">Cambios sin guardar</span>
+    <button class="btn btn--ghost btn--sm" type="button" id="descartar">Descartar</button>
+    <button class="btn btn--sm" type="button" id="bGuardar">Guardar</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/comun.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const CLAVE_SESION = "perpetuo-eventos-admin";
+let clave = "";
+let EVENTOS = [];
+let sel = null;          // id del evento abierto ("" = nuevo)
+let pestana = "evento";
+let REGISTROS = [];
+let sucio = false;
+
+const VACIO = { id: "", estado: "borrador", titulo: "", subtitulo: "", fecha: "", hora: "19:00", horaFin: "", lugar: "", direccion: "", mapa: "",
+  descripcion: "", imagen: "", invitados: [], precio: 0, cupo: 0, signo: "punto", color: "azul", notaCorreo: "", slug: "" };
+const color = e => "c-" + (COLORES.includes(e.color) ? e.color : "azul");
+const adm = (accion, datos) => api(accion, { clave, ...datos });
+
+let tToast;
+function toast(texto, mal) {
+  const t = $("#toast");
+  t.textContent = texto; t.classList.toggle("mal", !!mal); t.classList.add("on");
+  clearTimeout(tToast); tToast = setTimeout(() => t.classList.remove("on"), 3600);
+}
+function cargando(btn, si, texto) {
+  if (si) { btn.dataset.orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<span class="gira"></span>${texto || ""}`; }
+  else { btn.disabled = false; btn.innerHTML = btn.dataset.orig; }
+}
+
+/* ---------------- entrar ---------------- */
+pintarBichos();
+if (!CONFIG.API_URL) { $("#avisoDemo").hidden = false; $("#chipDemo").hidden = false; }
+
+$("#fEntrar").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const f = ev.target, b = $("#bEntrar");
+  f.querySelector('[data-f="clave"]').classList.remove("bad");
+  cargando(b, true, "Entrando…");
+  try { await api("admin.entrar", { clave: f.clave.value }); clave = f.clave.value; try { sessionStorage.setItem(CLAVE_SESION, clave); } catch (e) {} abrir(); }
+  catch (e) { $("#msgClave").textContent = errorTexto(e); f.querySelector('[data-f="clave"]').classList.add("bad"); f.clave.select(); }
+  cargando(b, false);
+});
+$("#salir").addEventListener("click", () => { if (!confirmarSalir()) return; try { sessionStorage.removeItem(CLAVE_SESION); } catch (e) {} location.reload(); });
+
+async function abrir() {
+  $("#entrar").hidden = true; $("#panel").hidden = false; document.body.classList.add("panel");
+  await cargarEventos();
+  const h = location.hash.slice(1);
+  if (h && EVENTOS.some(e => e.id === h)) elegir(h); else pintarPrincipal();
+}
+
+try { clave = sessionStorage.getItem(CLAVE_SESION) || ""; } catch (e) {}
+if (clave) api("admin.entrar", { clave }).then(abrir).catch(() => { clave = ""; });
+
+/* ---------------- lista lateral ---------------- */
+async function cargarEventos() {
+  try { EVENTOS = (await adm("admin.eventos")).eventos; }
+  catch (e) { toast(errorTexto(e), true); }
+  pintarLado();
+}
+function pintarLado() {
+  const hoy = hoyISO();
+  const orden = (a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora);
+  const prox = EVENTOS.filter(e => e.fecha >= hoy).sort(orden), pas = EVENTOS.filter(e => e.fecha < hoy).sort(orden).reverse();
+  const item = e => `<li><button type="button" class="ev ${color(e)}${e.id === sel ? " sel" : ""}" data-id="${e.id}">
+      <span class="chip"><b>${fecha.dia(e.fecha)}</b><span>${fecha.mes(e.fecha)}</span></span>
+      <span><h3>${esc(e.titulo)}</h3><small><span class="pill ${e.estado}">${e.estado}</span>${e.vendidos || 0}${e.cupo ? "/" + e.cupo : ""} lugares</small></span></button></li>`;
+  $("#evsProx").innerHTML = prox.map(item).join("") || '<li style="padding:6px 4px;color:var(--gris);font-size:14px">Ninguno todavía.</li>';
+  $("#evsPas").innerHTML = pas.map(item).join("");
+  $("#hPas").hidden = !pas.length;
+  document.querySelectorAll(".ev").forEach(b => b.addEventListener("click", () => elegir(b.dataset.id)));
+  $("#navResumen").classList.toggle("sel", sel === null);
+}
+
+function confirmarSalir() { return !sucio || confirm("Tienes cambios sin guardar. ¿Descartarlos?"); }
+function elegir(id, tab = "evento") {
+  if (!confirmarSalir()) return;
+  sel = id; pestana = tab; marcarSucio(false);
+  history.replaceState(null, "", id ? "#" + id : location.pathname);
+  pintarLado(); pintarPrincipal();
+  if (tab === "asistentes") cargarRegistros();
+}
+$("#nuevo").addEventListener("click", () => elegir(""));
+$("#navResumen").addEventListener("click", () => elegir(null));
+window.addEventListener("beforeunload", e => { if (sucio) { e.preventDefault(); e.returnValue = ""; } });
+
+/* ---------------- principal ---------------- */
+function pintarPrincipal() {
+  const m = $("#principal");
+  if (sel === null) { pintarResumen(); return; }
+  const e = EVENTOS.find(x => x.id === sel) || { ...VACIO, fecha: "" };
+  const nuevo = !e.id;
+  m.innerHTML = `
+    <div class="cabeza">
+      <div><h1>${nuevo ? "Nuevo evento" : esc(e.titulo)}</h1>
+        ${nuevo ? '<div class="sub">Se guarda como borrador hasta que lo publiques.</div>' : `<div class="sub">${fecha.conAnio(e.fecha)} · <span class="pill ${e.estado}">${e.estado}</span></div>`}</div>
+      ${nuevo ? "" : `<div class="tabs" role="tablist">
+        <button role="tab" type="button" data-t="evento" aria-selected="${pestana === "evento"}">Evento</button>
+        <button role="tab" type="button" data-t="asistentes" aria-selected="${pestana === "asistentes"}">Asistentes · ${e.registros || 0}</button></div>`}
+    </div>
+    ${nuevo ? "" : stats(e)}
+    <div id="contenido"></div>`;
+  m.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+    if (b.dataset.t === pestana || !confirmarSalir()) return;
+    pestana = b.dataset.t; marcarSucio(false);
+    m.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+    pintarContenido(e);
+    if (pestana === "asistentes") cargarRegistros();
+  }));
+  pintarContenido(e);
+}
+
+function stats(e) {
+  const p = e.cupo ? Math.min(e.vendidos / e.cupo, 1) : 0;
+  return `<div class="stats">
+    <div class="stat"><small>Lugares tomados</small><b>${e.vendidos || 0}</b>${e.cupo ? `<div class="barra-cupo"><i style="width:${(p * 100).toFixed(1)}%"></i></div>` : ""}</div>
+    <div class="stat"><small>Cupo</small><b>${e.cupo || "∞"}</b></div>
+    <div class="stat"><small>Ingresos</small><b>${dinero(e.ingresos)}</b></div>
+    <div class="stat"><small>Precio</small><b>${e.precio > 0 ? dinero(e.precio) : "Gratis"}</b></div></div>`;
+}
+
+function pintarContenido(e) {
+  const c = $("#contenido");
+  if (pestana === "asistentes") { c.innerHTML = '<div class="tabla-wrap"><div class="vacio-t"><span data-b="coma"></span>Cargando asistentes…</div></div>'; pintarBichos(c); return; }
+  c.innerHTML = formulario(e);
+  pintarBichos(c);
+  activarFormulario(e);
+}
+
+/* ---------------- formulario de evento ---------------- */
+function formulario(e) {
+  const campo = (n, lbl, attrs = "", ayuda = "") => `<label class="field" data-f="${n}"><span class="lbl">${lbl}</span>
+    <input class="input" name="${n}" value="${esc(e[n])}" ${attrs}>${ayuda ? `<span class="ayuda">${ayuda}</span>` : ""}</label>`;
+  return `<form class="editor" id="fEvento" novalidate>
+    <div>
+      <section class="bloque"><h2>Lo básico</h2>
+        ${campo("titulo", "Título", 'maxlength="140" required placeholder="Noche de crónica"')}
+        ${campo("subtitulo", "Subtítulo <small>Una línea que antoje</small>", 'maxlength="300"')}
+        <div class="field"><span class="lbl">Descripción</span>
+          <div class="formato" role="toolbar" aria-label="Formato">
+            <button type="button" data-fmt="**" title="Negritas"><b>N</b></button>
+            <button type="button" data-fmt="*" title="Cursivas"><i>C</i></button>
+            <button type="button" data-fmt="enlace" title="Enlace">Enlace</button>
+            <small>Separa los párrafos con una línea en blanco</small></div>
+          <textarea class="input" name="descripcion" rows="9" maxlength="8000" placeholder="Cuenta de qué va el evento, quién participa y qué esperar.">${esc(e.descripcion)}</textarea></div>
+      </section>
+      <section class="bloque"><h2>Invitados</h2>
+        <p class="ayuda" style="margin:-8px 0 14px">Quién lee, platica o da el taller. Aparecen con su foto en la página del evento y en la portada.</p>
+        <div class="invs" id="invs">${(e.invitados || []).map(filaInvitado).join("")}</div>
+        <button class="btn btn--ghost btn--sm" type="button" id="masInv" style="margin-bottom:18px">+ Agregar invitado</button>
+      </section>
+      <section class="bloque"><h2>Cuándo y dónde</h2>
+        <div class="fila" style="--n:3">
+          ${campo("fecha", "Fecha", 'type="date" required')}
+          ${campo("hora", "Empieza", 'type="time" required')}
+          ${campo("horaFin", "Termina <small>Opcional</small>", 'type="time"')}
+        </div>
+        <div class="fila">
+          ${campo("lugar", "Lugar", 'maxlength="140" placeholder="Foro Perpetuo"')}
+          ${campo("direccion", "Dirección", 'maxlength="240" placeholder="Calle, colonia, ciudad"')}
+        </div>
+        ${campo("mapa", "Enlace al mapa <small>Opcional</small>", 'type="url" placeholder="https://maps.app.goo.gl/…"', "Si lo dejas vacío, usamos la dirección para abrir Google Maps.")}
+      </section>
+      <section class="bloque"><h2>Boletos</h2>
+        <div class="fila">
+          ${campo("precio", "Precio por persona (MXN)", 'type="number" min="0" step="1" inputmode="numeric"', "0 = gratis, solo registro.")}
+          ${campo("cupo", "Cupo", 'type="number" min="0" step="1" inputmode="numeric"', "0 = sin límite.")}
+        </div>
+        <label class="field"><span class="lbl">Nota para el correo de confirmación <small>Opcional</small></span>
+          <textarea class="input" name="notaCorreo" rows="3" maxlength="1000" placeholder="Las puertas abren a las 19:00. Trae libreta.">${esc(e.notaCorreo)}</textarea></label>
+      </section>
+      <section class="bloque"><h2>Cómo se ve</h2>
+        <div class="field"><span class="lbl">Foto principal <small>Opcional · horizontal; puede ser la foto del invitado</small></span>
+          <div class="imagen"><span class="mini" id="mini">${e.imagen ? "" : "Sin imagen: usamos un póster con el signo"}</span>
+            <div><div class="acciones">
+              <span class="btn btn--ghost btn--sm subir">Subir foto<input type="file" accept="image/jpeg,image/png,image/webp" id="archivo"></span>
+              <button class="btn btn--ghost btn--sm" type="button" id="quitarImg"${e.imagen ? "" : " hidden"}>Quitar</button></div>
+              <input class="input" name="imagen" value="${esc(e.imagen && !e.imagen.startsWith("data:") ? e.imagen : "")}" placeholder="…o pega la URL de una imagen" style="margin-top:8px;font-size:14px;padding:9px 11px">
+            </div></div></div>
+        <div class="field"><span class="lbl">Signo</span><div class="signos">${SIGNOS.map(s =>
+          `<label><input type="radio" name="signo" value="${s}"${e.signo === s ? " checked" : ""}><span class="op" title="${s}"><span data-b="${s}"></span></span><span class="sr">${s}</span></label>`).join("")}</div></div>
+        <div class="field"><span class="lbl">Color</span><div class="colores">${COLORES.map(c =>
+          `<label class="c-${c}"><input type="radio" name="color" value="${c}"${e.color === c ? " checked" : ""}><span class="op" title="${c}"></span><span class="sr">${c}</span></label>`).join("")}</div></div>
+      </section>
+      <section class="bloque"><h2>Publicación</h2>
+        <div class="field"><div class="segmento">${[["publicado", "Publicado"], ["borrador", "Borrador"], ["oculto", "Oculto"]].map(([v, t]) =>
+          `<label><input type="radio" name="estado" value="${v}"${e.estado === v ? " checked" : ""}><span>${t}</span></label>`).join("")}</div>
+          <span class="ayuda">Borrador y oculto no aparecen en el sitio. Oculto sirve para cerrar un evento sin borrar sus registros.</span></div>
+        ${campo("slug", "Dirección del evento", 'maxlength="80" placeholder="se genera con el título"', `eventos.perpetuo.global/#/e/<b id="slugVer">${esc(e.slug || "…")}</b>`)}
+      </section>
+    </div>
+    <aside class="previa" aria-label="Vista previa">
+      <small>Así se ve en el sitio</small>
+      <div class="marco" id="previa"></div>
+      ${e.id && e.estado === "publicado" ? `<a class="ir" href="./#/e/${encodeURIComponent(e.slug)}" target="_blank" rel="noopener">Abrir la página del evento ↗</a>` : ""}
+    </aside>
+  </form>`;
+}
+
+function filaInvitado(p = {}) {
+  return `<div class="inv" data-foto="${esc(p.foto || "")}">
+    <label class="inv-foto" style="${p.foto ? `background-image:url('${esc(p.foto)}')` : ""}" title="Subir foto">${p.foto ? "" : esc(iniciales(p.nombre)) || "+"}
+      <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Foto de ${esc(p.nombre || "invitado")}"></label>
+    <div class="inv-campos"><input class="input" data-k="nombre" value="${esc(p.nombre || "")}" placeholder="Nombre, p. ej. Juan Millor" maxlength="120">
+      <input class="input" data-k="rol" value="${esc(p.rol || "")}" placeholder="Quién es: cronista, autor de *Ciudad de paso*" maxlength="200"></div>
+    <button class="inv-quitar" type="button" aria-label="Quitar invitado">×</button></div>`;
+}
+
+function leerForm(f) {
+  const d = Object.fromEntries(new FormData(f));
+  d.precio = Number(d.precio) || 0; d.cupo = Number(d.cupo) || 0;
+  d.invitados = [...f.querySelectorAll(".inv")].map(el => ({
+    nombre: el.querySelector('[data-k="nombre"]').value.trim(), rol: el.querySelector('[data-k="rol"]').value.trim(), foto: el.dataset.foto
+  })).filter(p => p.nombre);
+  return d;
+}
+
+/* Achica la foto en el navegador antes de subirla (más rápida y bajo el límite de 5 MB). */
+function reducir(file, lado) {
+  return new Promise((ok, mal) => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, lado / Math.max(img.width, img.height));
+      const c = Object.assign(document.createElement("canvas"), { width: Math.round(img.width * k), height: Math.round(img.height * k) });
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      ok({ tipo: "image/jpeg", datos: c.toDataURL("image/jpeg", .86).split(",")[1] });
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); mal(new Error("imagen")); };
+    img.src = url;
+  });
+}
+async function subirFoto(file, lado) {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error("imagen");
+  const { tipo, datos } = await reducir(file, lado);
+  return (await adm("admin.subirImagen", { nombre: file.name.replace(/\.\w+$/, "") + ".jpg", tipo, datos })).url;
+}
+
+function activarFormulario(e) {
+  const f = $("#fEvento");
+  let imagen = e.imagen || "";
+  const previa = () => {
+    const d = leerForm(f);
+    const img = imagen || d.imagen;
+    $("#mini").style.backgroundImage = img ? `url("${img.replace(/"/g, "%22")}")` : "";
+    $("#mini").textContent = img ? "" : "Sin imagen: usamos un póster con el signo";
+    $("#quitarImg").hidden = !img;
+    const fch = d.fecha || hoyISO();
+    $("#previa").innerHTML = `${d.estado !== "publicado" ? `<span class="borr">${d.estado}</span>` : ""}
+      <div class="pv c-${d.color}"><span class="pv-signo">${bicho(d.signo)}</span>
+        <div class="f"><span>${fecha.semana(fch)}</span><b>${fecha.dia(fch)}</b><span>${fecha.mes(fch)}</span></div>
+        <div class="cu"><small>${fecha.hora(d.hora)}${d.lugar ? " · " + esc(d.lugar) : ""}</small><h3>${esc(d.titulo) || "Título del evento"}</h3>
+          <div class="pr">${d.precio > 0 ? dinero(d.precio) : "Gratis"}<span>${d.precio > 0 ? "Boletos" : "Registro"} →</span></div></div></div>`;
+    $("#slugVer").textContent = (d.slug || d.titulo).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "…";
+  };
+  previa();
+  f.addEventListener("input", ev => { ev.target.closest(".field")?.classList.remove("bad"); if (ev.target.name === "imagen") imagen = ""; marcarSucio(true); previa(); });
+  f.addEventListener("change", previa);
+  f.addEventListener("submit", ev => { ev.preventDefault(); guardar(); });
+
+  $("#quitarImg").addEventListener("click", () => { imagen = ""; f.imagen.value = ""; marcarSucio(true); previa(); });
+  $("#archivo").addEventListener("change", async ev => {
+    const file = ev.target.files[0];
+    if (!file) return;
+    toast("Subiendo foto…");
+    try {
+      const url = await subirFoto(file, 1800);
+      imagen = url; f.imagen.value = url.startsWith("data:") ? "" : url;
+      marcarSucio(true); previa(); toast("Imagen lista");
+    } catch (x) { toast(errorTexto(x), true); }
+    ev.target.value = "";
+  });
+
+  // formato de la descripción: envuelve lo seleccionado
+  const desc = f.descripcion;
+  f.querySelectorAll("[data-fmt]").forEach(b => b.addEventListener("click", () => {
+    const [a, z] = [desc.selectionStart, desc.selectionEnd], sel = desc.value.slice(a, z);
+    let nuevo;
+    if (b.dataset.fmt === "enlace") {
+      const url = prompt("Pega el enlace (https://…)", "https://");
+      if (!url || !/^https?:\/\/\S+$/.test(url)) return;
+      nuevo = `[${sel || "texto del enlace"}](${url})`;
+    } else nuevo = b.dataset.fmt + (sel || "texto") + b.dataset.fmt;
+    desc.setRangeText(nuevo, a, z, "select");
+    desc.focus(); marcarSucio(true);
+  }));
+
+  // invitados
+  const invs = $("#invs");
+  $("#masInv").addEventListener("click", () => {
+    invs.insertAdjacentHTML("beforeend", filaInvitado());
+    invs.lastElementChild.querySelector('[data-k="nombre"]').focus();
+    marcarSucio(true);
+  });
+  invs.addEventListener("click", ev => {
+    const q = ev.target.closest(".inv-quitar");
+    if (q) { q.closest(".inv").remove(); marcarSucio(true); }
+  });
+  invs.addEventListener("input", ev => {
+    const fila = ev.target.closest(".inv"), foto = fila.querySelector(".inv-foto");
+    if (ev.target.dataset.k === "nombre" && !fila.dataset.foto) foto.firstChild.textContent = iniciales(ev.target.value) || "+";
+  });
+  invs.addEventListener("change", async ev => {
+    if (ev.target.type !== "file" || !ev.target.files[0]) return;
+    const fila = ev.target.closest(".inv"), foto = fila.querySelector(".inv-foto");
+    foto.classList.add("cargando");
+    try {
+      const url = await subirFoto(ev.target.files[0], 600);
+      fila.dataset.foto = url;
+      foto.style.backgroundImage = `url('${url}')`; foto.firstChild.textContent = "";
+      marcarSucio(true);
+    } catch (x) { toast(errorTexto(x), true); }
+    foto.classList.remove("cargando"); ev.target.value = "";
+  });
+
+  guardar = async () => {
+    const d = leerForm(f);
+    d.id = e.id; d.imagen = imagen || d.imagen;
+    const malos = [];
+    if (!d.titulo.trim()) malos.push("titulo");
+    if (!d.fecha) malos.push("fecha");
+    if (!d.hora) malos.push("hora");
+    malos.forEach(n => f.querySelector(`[data-f="${n}"]`).classList.add("bad"));
+    if (malos.length) { f.querySelector(`[name="${malos[0]}"]`).focus(); toast(ERRORES.datos, true); return; }
+    if (d.precio > 0 && d.precio < 10) { f.precio.focus(); toast(ERRORES.precio, true); return; }
+    const b = $("#bGuardar");
+    cargando(b, true, "Guardando…");
+    try {
+      const { evento } = await adm("admin.guardar", { evento: d });
+      const i = EVENTOS.findIndex(x => x.id === evento.id);
+      i < 0 ? EVENTOS.push(evento) : (EVENTOS[i] = evento);
+      marcarSucio(false);
+      sel = evento.id; history.replaceState(null, "", "#" + sel);
+      pintarLado(); pintarPrincipal();
+      toast(evento.estado === "publicado" ? "Guardado y publicado" : "Guardado como " + evento.estado);
+    } catch (x) { toast(errorTexto(x), true); }
+    cargando(b, false);
+  };
+}
+let guardar = () => {};
+$("#bGuardar").addEventListener("click", () => guardar());
+$("#descartar").addEventListener("click", () => { marcarSucio(false); pintarPrincipal(); });
+document.addEventListener("keydown", e => { if ((e.metaKey || e.ctrlKey) && e.key === "s" && sucio) { e.preventDefault(); guardar(); } });
+function marcarSucio(si) { sucio = si; $("#barraGuardar").classList.toggle("on", si); }
+
+/* ---------------- resumen ---------------- */
+let RESUMEN = null, rango = 30, metrica = "ingresos";
+const DIA = 864e5;
+const diaLocal = d => { d = new Date(d); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+const haceRato = f => {
+  const m = Math.round((Date.now() - new Date(f)) / 6e4);
+  if (m < 60) return m <= 1 ? "hace un momento" : `hace ${m} min`;
+  if (m < 1440) return `hace ${Math.round(m / 60)} h`;
+  const d = Math.round(m / 1440); return d === 1 ? "ayer" : `hace ${d} días`;
+};
+
+async function pintarResumen() {
+  const m = $("#principal");
+  m.innerHTML = `<div class="cabeza"><div><h1>Resumen</h1><div class="sub">Cómo van las ventas y los registros de los eventos de Perpetuo.</div></div>
+    <div class="segmento" id="rango">${[[7, "7 días"], [30, "30 días"], [90, "90 días"]].map(([v, t]) =>
+      `<label><input type="radio" name="rango" value="${v}"${v === rango ? " checked" : ""}><span>${t}</span></label>`).join("")}</div></div>
+    <div id="conexion"></div>
+    <div id="tablero">${RESUMEN ? "" : '<div class="tarjeta"><div class="g-vacio">Cargando el resumen…</div></div>'}</div>`;
+  $("#rango").addEventListener("change", ev => { rango = Number(ev.target.value); pintarTablero(); });
+  if (RESUMEN) pintarTablero();
+  pintarConexion();
+  try {
+    RESUMEN = await adm("admin.resumen");
+    EVENTOS = RESUMEN.eventos; pintarLado();
+    if (sel === null) pintarTablero();
+  } catch (e) { toast(errorTexto(e), true); }
+}
+
+let ESTADO = null;
+async function pintarConexion() {
+  try { ESTADO = ESTADO || await adm("admin.estado"); } catch (e) { ESTADO = { stripe: "error" }; }
+  const c = $("#conexion");
+  if (!c) return;
+  const st = {
+    demo: ["mal", "Stripe sin conectar: modo demostración, los pagos se simulan"],
+    falta: ["mal", "Stripe: falta la clave STRIPE_SECRET en Apps Script"],
+    error: ["mal", "Stripe: la clave no funciona"],
+    prueba: ["medio", "Stripe en modo prueba" + (ESTADO.cuenta ? " · " + esc(ESTADO.cuenta) : "") + ": no se cobra de verdad"],
+    real: [ESTADO.cobros === false ? "medio" : "ok", "Stripe cobrando" + (ESTADO.cuenta ? " · " + esc(ESTADO.cuenta) : "") + (ESTADO.cobros === false ? " (la cuenta aún no tiene los cobros activados)" : "")]
+  }[ESTADO.stripe] || ["mal", "Stripe: estado desconocido"];
+  const alerta = st[0] === "mal";
+  c.innerHTML = `<div class="estado-con${alerta ? " alerta" : ""}"><span class="luz ${st[0]}">${st[1]}</span>
+    ${ESTADO.correosHoy != null ? `<span class="luz ${ESTADO.correosHoy > 20 ? "ok" : "medio"}">Correos disponibles hoy: ${ESTADO.correosHoy}</span>` : ""}
+    ${ESTADO.slack != null ? `<span class="luz ${ESTADO.slack ? "ok" : ""}">Slack ${ESTADO.slack ? "activo" : "apagado"}</span>` : ""}
+    ${alerta ? '<a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener">Abrir las claves de Stripe →</a>' : ""}</div>`;
+}
+
+function pintarTablero() {
+  const t = $("#tablero");
+  if (!t || !RESUMEN) return;
+  const ahora = Date.now(), hoy = hoyISO();
+  const ventas = RESUMEN.ventas.map(v => ({ ...v, t: new Date(v.fecha).getTime() }));
+  const enRango = (a, b) => ventas.filter(v => v.t > ahora - a * DIA && v.t <= ahora - b * DIA);
+  const act = enRango(rango, 0), ant = enRango(rango * 2, rango);
+  const suma = (l, k) => l.reduce((s, v) => s + (Number(v[k]) || 0), 0);
+  const delta = (a, b) => {
+    if (!b) return a ? '<span class="delta sube">Nuevo en este periodo</span>' : '<span class="delta">Sin ventas antes</span>';
+    const p = Math.round((a - b) / b * 100);
+    return `<span class="delta ${p > 0 ? "sube" : p < 0 ? "baja" : ""}">${p > 0 ? "▲" : p < 0 ? "▼" : "="} ${Math.abs(p)}% vs. ${rango} días antes</span>`;
+  };
+  const prox = RESUMEN.eventos.filter(e => e.fecha >= hoy && e.estado === "publicado").sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+  const conCupo = prox.filter(e => e.cupo);
+  const ocupacion = conCupo.length ? Math.round(suma(conCupo, "vendidos") / suma(conCupo, "cupo") * 100) : null;
+  const ingresos = suma(act.filter(v => v.estado === "pagado"), "total"), boletos = suma(act, "cantidad");
+
+  t.innerHTML = `
+    <div class="stats">
+      <div class="stat hero"><small>Ingresos</small><b>${dinero(ingresos)}</b>${delta(ingresos, suma(ant.filter(v => v.estado === "pagado"), "total"))}</div>
+      <div class="stat"><small>Lugares vendidos</small><b>${boletos}</b>${delta(boletos, suma(ant, "cantidad"))}</div>
+      <div class="stat"><small>Próximos eventos</small><b>${prox.length}</b><span class="nota">${prox[0] ? "El siguiente: " + fecha.dia(prox[0].fecha) + " " + fecha.mes(prox[0].fecha) : "Ninguno publicado"}</span></div>
+      <div class="stat"><small>Ocupación próxima</small><b>${ocupacion == null ? "—" : ocupacion + "%"}</b>
+        ${ocupacion == null ? '<span class="nota">Sin eventos con cupo</span>' : `<div class="barra-cupo"><i style="width:${Math.min(ocupacion, 100)}%"></i></div>`}</div>
+    </div>
+    <div class="tablero">
+      <section class="tarjeta">
+        <div class="tarjeta-cab"><h2>${metrica === "ingresos" ? "Ingresos" : "Lugares"} por día<small>Últimos ${rango} días · pasa el cursor sobre una barra</small></h2>
+          <div class="segmento chico" id="metrica">${[["ingresos", "Ingresos"], ["lugares", "Lugares"]].map(([v, txt]) =>
+            `<label><input type="radio" name="metrica" value="${v}"${v === metrica ? " checked" : ""}><span>${txt}</span></label>`).join("")}</div></div>
+        ${grafica(act, rango)}
+      </section>
+      <div style="display:grid;gap:16px">
+        <section class="tarjeta"><div class="tarjeta-cab"><h2>Próximos eventos<small>Lugares tomados del cupo</small></h2></div>
+          ${prox.length ? `<ul class="ocup">${prox.slice(0, 6).map(e => {
+            const p = e.cupo ? Math.min(e.vendidos / e.cupo, 1) : 0;
+            return `<li class="c-${e.color}"><button type="button" data-id="${e.id}" class="${p >= 1 ? "lleno" : ""}">
+              <span class="chip"><b>${fecha.dia(e.fecha)}</b><span>${fecha.mes(e.fecha)}</span></span>
+              <span style="min-width:0"><h3>${esc(e.titulo)}</h3>${e.cupo ? `<div class="pista"><i style="width:${Math.max(p * 100, 1.5).toFixed(1)}%"></i></div>` : '<small style="color:var(--gris);font-size:12.5px;font-weight:600">Sin límite de cupo</small>'}</span>
+              <span class="cifra"><b>${e.vendidos}${e.cupo ? "/" + e.cupo : ""}</b>${e.precio > 0 ? dinero(e.ingresos) : "gratis"}</span></button></li>`; }).join("")}</ul>`
+            : '<p class="vacio-chico">No hay eventos próximos publicados.</p>'}
+        </section>
+        <section class="tarjeta"><div class="tarjeta-cab"><h2>Lo más reciente</h2></div>
+          ${ventas.length ? `<ul class="feed">${ventas.slice().sort((a, b) => b.t - a.t).slice(0, 7).map((v, i) => {
+            const e = RESUMEN.eventos.find(x => x.id === v.eventoId) || {};
+            return `<li class="c-${e.color || "azul"}" style="--n:${i}"><span class="punto"></span>
+              <span><b>${esc(v.nombre)}</b> · ${v.cantidad} ${v.cantidad === 1 ? "lugar" : "lugares"}<small>${esc(v.evento)} · ${haceRato(v.fecha)}</small></span>
+              <span class="monto">${v.estado === "pagado" ? dinero(v.total) : v.estado}</span></li>`; }).join("")}</ul>`
+            : '<p class="vacio-chico">Todavía no hay ventas ni registros.</p>'}
+        </section>
+      </div>
+    </div>`;
+
+  $("#metrica").addEventListener("change", ev => { metrica = ev.target.value; pintarTablero(); });
+  t.querySelectorAll(".ocup [data-id]").forEach(b => b.addEventListener("click", () => elegir(b.dataset.id, "asistentes")));
+  activarGrafica();
+}
+
+function grafica(ventas, dias) {
+  const porDia = {};
+  ventas.forEach(v => {
+    const k = diaLocal(v.t), d = porDia[k] || (porDia[k] = { ingresos: 0, lugares: 0, ventas: 0 });
+    if (v.estado === "pagado") d.ingresos += Number(v.total) || 0;
+    d.lugares += v.cantidad; d.ventas++;
+  });
+  const serie = Array.from({ length: dias }, (_, i) => { const k = diaLocal(Date.now() - (dias - 1 - i) * DIA); return { k, ...(porDia[k] || { ingresos: 0, lugares: 0, ventas: 0 }) }; });
+  const max = Math.max(...serie.map(d => d[metrica]));
+  if (!max) return `<div class="g-vacio">${metrica === "ingresos" ? "Sin ingresos" : "Sin lugares vendidos"} en estos ${dias} días.</div>`;
+  // tope "redondo" para que las líneas guía caigan en números limpios
+  const paso = Math.pow(10, Math.floor(Math.log10(max / 3)));
+  const tope = Math.ceil(max / 3 / paso) * paso * 3;
+  const fmt = n => metrica === "ingresos" ? (n >= 1000 ? "$" + (n / 1000).toLocaleString("es-MX", { maximumFractionDigits: 1 }) + "k" : dinero(n)) : n;
+  const etiqueta = k => { const d = diaDe(k); return d.getDate() + " " + d.toLocaleDateString("es-MX", { month: "short" }).replace(".", ""); };
+  const cada = Math.ceil(dias / 6);
+  const xs = serie.filter((_, i) => (dias - 1 - i) % cada === 0).map(d => `<span>${etiqueta(d.k)}</span>`);
+  return `<div class="grafica" id="grafica">
+    <div class="g-eje" aria-hidden="true">${[3, 2, 1, 0].map(i => `<span style="bottom:${(i / 3 * 100).toFixed(2)}%">${fmt(tope / 3 * i)}</span>`).join("")}</div>
+    <div class="g-area">
+      ${[1, 2, 3].map(i => `<span class="linea" style="bottom:${(i / 3 * 100).toFixed(2)}%"></span>`).join("")}
+      <div class="g-barras" role="img" aria-label="${metrica} por día en los últimos ${dias} días">${serie.map((d, i) =>
+        `<span class="g-col" data-i="${i}">${d[metrica] ? `<i style="height:${(d[metrica] / tope * 100).toFixed(2)}%;--n:${i}"></i>` : ""}</span>`).join("")}</div>
+      <div class="g-tip" id="gTip"></div>
+    </div>
+    <div class="g-x" aria-hidden="true">${xs.join("")}</div>
+    <table class="sr"><caption>${metrica} por día</caption><tr><th>Día</th><th>Ingresos</th><th>Lugares</th></tr>${serie.filter(d => d.ventas).map(d =>
+      `<tr><td>${d.k}</td><td>${d.ingresos}</td><td>${d.lugares}</td></tr>`).join("")}</table>
+  </div>`;
+}
+
+function activarGrafica() {
+  const g = $("#grafica");
+  if (!g) return;
+  const tip = $("#gTip"), area = g.querySelector(".g-area");
+  const act = RESUMEN.ventas.filter(v => new Date(v.fecha).getTime() > Date.now() - rango * DIA);
+  g.querySelectorAll(".g-col").forEach(col => {
+    col.addEventListener("mouseenter", () => {
+      const k = diaLocal(Date.now() - (rango - 1 - Number(col.dataset.i)) * DIA);
+      const delDia = act.filter(v => diaLocal(v.fecha) === k);
+      const ingresos = delDia.filter(v => v.estado === "pagado").reduce((s, v) => s + (Number(v.total) || 0), 0);
+      const lugares = delDia.reduce((s, v) => s + v.cantidad, 0);
+      tip.innerHTML = `<span style="opacity:.7">${fecha.larga(k)}</span><b>${metrica === "ingresos" ? dinero(ingresos) : lugares + (lugares === 1 ? " lugar" : " lugares")}</b>${metrica === "ingresos" ? lugares + (lugares === 1 ? " lugar" : " lugares") + " · " : ""}${delDia.length} ${delDia.length === 1 ? "registro" : "registros"}`;
+      const a = area.getBoundingClientRect(), c = col.getBoundingClientRect(), barra = col.querySelector("i");
+      const x = Math.min(Math.max(c.left + c.width / 2 - a.left, 70), a.width - 70);
+      tip.style.left = x + "px";
+      tip.style.top = a.height * (1 - (barra ? parseFloat(barra.style.height) : 0) / 100) + "px"; // por el alto, no por el rect: la barra puede seguir creciendo
+      tip.classList.add("on"); col.classList.add("on");
+    });
+    col.addEventListener("mouseleave", () => { tip.classList.remove("on"); col.classList.remove("on"); });
+  });
+}
+
+/* ---------------- asistentes ---------------- */
+async function cargarRegistros() {
+  const id = sel;
+  try { const r = await adm("admin.registros", { eventoId: id }); if (sel !== id || pestana !== "asistentes") return; REGISTROS = r.registros; pintarAsistentes(); }
+  catch (e) { toast(errorTexto(e), true); }
+}
+
+const OK = ["pagado", "gratis", "cortesía"];
+function pintarAsistentes(filtro = "") {
+  const c = $("#contenido");
+  const e = EVENTOS.find(x => x.id === sel);
+  const q = filtro.trim().toLowerCase();
+  const lista = REGISTROS.filter(r => !q || (r.nombre + " " + r.correo + " " + r.folio).toLowerCase().includes(q));
+  const vinieron = REGISTROS.filter(r => r.asistio === true || r.asistio === "sí").reduce((s, r) => s + r.cantidad, 0);
+  const check = '<svg viewBox="0 0 24 24" fill="none" stroke="#0D1114" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  c.innerHTML = `
+    <div class="herr">
+      <input class="input" type="search" id="buscar" placeholder="Buscar por nombre, correo o folio" value="${esc(filtro)}">
+      <span style="font-weight:700;font-size:14px;color:var(--gris)">${vinieron} en la puerta</span>
+      <span class="esp"></span>
+      <button class="btn btn--ghost btn--sm" type="button" id="bCortesia">+ Cortesía</button>
+      <button class="btn btn--sm" type="button" id="bCsv">Descargar CSV</button>
+    </div>
+    <div id="slotCortesia"></div>
+    <div class="tabla-wrap">${lista.length ? `<table>
+      <thead><tr><th>Folio</th><th>Quién</th><th class="num">Lugares</th><th class="num">Total</th><th>Estado</th><th>Correo</th><th>Llegó</th></tr></thead>
+      <tbody>${lista.map(r => {
+        const vino = r.asistio === true || r.asistio === "sí";
+        return `<tr class="${vino ? "vino" : ""}">
+          <td class="folio">${esc(r.folio)}</td>
+          <td><div class="quien"><b>${esc(r.nombre)}</b><span>${esc(r.correo)}</span></div></td>
+          <td class="num">${r.cantidad}</td>
+          <td class="num">${r.total ? dinero(r.total) : "—"}</td>
+          <td><span class="pill ${esc(r.estado)}">${esc(r.estado)}</span><br><small>${new Date(r.fecha).toLocaleString("es-MX", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</small></td>
+          <td>${OK.includes(r.estado) ? `<small>${esc(r.correoEnviado || "")}</small><br><button class="link-btn" type="button" data-reenviar="${esc(r.folio)}">Reenviar</button>` : "<small>—</small>"}</td>
+          <td>${OK.includes(r.estado) ? `<button class="marca-asis" type="button" aria-pressed="${vino}" aria-label="Llegó ${esc(r.nombre)}" data-folio="${esc(r.folio)}">${check}</button>` : ""}</td>
+        </tr>`; }).join("")}</tbody></table>`
+      : `<div class="vacio-t"><span data-b="interrogacion"></span>${q ? "Nadie coincide con esa búsqueda." : "Todavía no hay registros para este evento."}</div>`}</div>`;
+  pintarBichos(c);
+
+  const buscar = $("#buscar");
+  buscar.addEventListener("input", () => { const pos = buscar.selectionStart; pintarAsistentes(buscar.value); const b = $("#buscar"); b.focus(); b.setSelectionRange(pos, pos); });
+  c.querySelectorAll("[data-folio]").forEach(b => b.addEventListener("click", async () => {
+    const r = REGISTROS.find(x => x.folio === b.dataset.folio), nuevo = !(r.asistio === true || r.asistio === "sí");
+    r.asistio = nuevo; b.setAttribute("aria-pressed", nuevo); b.closest("tr").classList.toggle("vino", nuevo);
+    try { await adm("admin.asistencia", { folio: r.folio, asistio: nuevo }); }
+    catch (x) { r.asistio = !nuevo; toast(errorTexto(x), true); pintarAsistentes(buscar.value); }
+  }));
+  c.querySelectorAll("[data-reenviar]").forEach(b => b.addEventListener("click", async () => {
+    b.disabled = true; b.textContent = "Enviando…";
+    try { await adm("admin.reenviar", { folio: b.dataset.reenviar }); toast("Correo reenviado"); b.textContent = "Reenviado"; }
+    catch (x) { toast(errorTexto(x), true); b.disabled = false; b.textContent = "Reenviar"; }
+  }));
+  $("#bCsv").addEventListener("click", () => csv(e));
+  $("#bCortesia").addEventListener("click", () => formCortesia(e));
+}
+
+function formCortesia(e) {
+  const s = $("#slotCortesia");
+  if (s.innerHTML) { s.innerHTML = ""; return; }
+  s.innerHTML = `<form class="cortesia" id="fCortesia" novalidate><div class="fila">
+    <label class="field"><span class="lbl">Nombre</span><input class="input" name="nombre" required></label>
+    <label class="field" data-f="correo"><span class="lbl">Correo</span><input class="input" name="correo" type="email" required><span class="msg">${ERRORES.correo}</span></label>
+    <label class="field"><span class="lbl">Lugares</span><input class="input" name="cantidad" type="number" min="1" max="20" value="1"></label>
+    <div class="field"><button class="btn btn--red" type="submit" style="width:100%">Mandar cortesía</button></div></div>
+    <p class="ayuda" style="margin:-6px 0 14px">Le llega el mismo correo de confirmación, sin cobro. Cuenta contra el cupo.</p></form>`;
+  const f = $("#fCortesia");
+  f.nombre.focus();
+  f.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    if (!correoOk(f.correo.value.trim())) { f.querySelector('[data-f="correo"]').classList.add("bad"); f.correo.focus(); return; }
+    const b = f.querySelector("button");
+    cargando(b, true, "Enviando…");
+    try {
+      await adm("admin.cortesia", { eventoId: e.id, nombre: f.nombre.value.trim(), correo: f.correo.value.trim(), cantidad: Number(f.cantidad.value) || 1 });
+      toast("Cortesía enviada a " + f.correo.value.trim());
+      await cargarEventos(); pintarPrincipal(); cargarRegistros();
+    } catch (x) { toast(errorTexto(x), true); cargando(b, false); }
+  });
+}
+
+function csv(e) {
+  const cols = ["folio", "nombre", "correo", "cantidad", "total", "estado", "fecha", "asistio", "correoEnviado"];
+  const celda = v => { v = String(v == null ? "" : v === true ? "sí" : v === false ? "" : v); return /[",\n;]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+  const txt = "﻿" + [cols.join(","), ...REGISTROS.map(r => cols.map(k => celda(r[k])).join(","))].join("\n");
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([txt], { type: "text/csv;charset=utf-8" })), download: "asistentes-" + e.slug + ".csv" });
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+</script>
+</body>
+</html>

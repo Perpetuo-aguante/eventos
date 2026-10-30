@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eventos · Perpetuo</title>
+<meta name="description" content="Lecturas, mesas, talleres y fiestas de Perpetuo, revista literaria digital. Aparta tu lugar y recibe tus boletos por correo.">
+<meta property="og:title" content="Eventos · Perpetuo">
+<meta property="og:description" content="Lecturas, mesas, talleres y fiestas de Perpetuo. Aparta tu lugar aquí.">
+<meta property="og:url" content="https://eventos.perpetuo.global">
+<meta name="theme-color" content="#074990">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/comun.css">
+<style>
+html{ scroll-behavior:smooth; }
+.sitio{ position:relative; z-index:1; max-width:1040px; margin:0 auto; padding:30px 20px 60px; }
+@media (max-width:560px){ .sitio{ padding:22px 16px 48px; } }
+
+/* ---------------- CABEZA ---------------- */
+.top{ display:flex; justify-content:space-between; align-items:center; gap:16px; color:var(--papel); }
+.marca{ display:flex; align-items:center; gap:12px; text-decoration:none; }
+.marca .logo{ width:150px; }
+.marca small{ font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px 2px; border:1.5px solid rgba(250,246,241,.5); border-radius:999px; }
+.top a.site{ font-size:14px; font-weight:600; text-decoration:none; opacity:.8; border-bottom:1.5px solid rgba(250,246,241,.4); }
+.top a.site:hover{ opacity:1; }
+@media (max-width:480px){ .marca .logo{ width:118px; } .top a.site{ display:none; } }
+
+#vista{ outline:none; }
+#vista.entra > *{ animation:entra .55s var(--ease-out) both; }
+@keyframes entra{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:none; } }
+
+/* ---------------- PORTADA ---------------- */
+.arranque{ display:grid; grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr); gap:44px; align-items:center; padding:38px 0 0; }
+@media (max-width:860px){ .arranque{ grid-template-columns:1fr; gap:22px; padding:26px 0 0; } }
+.intro{ color:var(--papel); }
+.kicker{ display:inline-block; font-size:13px; font-weight:800; letter-spacing:.02em; padding:4px 11px; border-radius:999px; background:var(--lima); color:var(--tinta); }
+.titular{ margin:16px 0 0; font-size:clamp(42px,4.8vw,62px); line-height:.92; font-weight:900; letter-spacing:-.055em; }
+.titular .l{ display:block; overflow:hidden; padding-bottom:.06em; margin-bottom:-.06em; }
+.titular .l > span{ display:inline-block; animation:sube .9s var(--ease-out) both; animation-delay:calc(var(--i) * 90ms + 80ms); }
+.titular em{ font-style:normal; color:var(--lima); }
+@keyframes sube{ from{ transform:translateY(105%) rotate(3deg); } to{ transform:none; } }
+.intro .lead{ margin:18px 0 0; font-size:18px; line-height:1.45; max-width:40ch; color:rgba(250,246,241,.84); animation:entra .8s .35s var(--ease-out) both; }
+.intro .saltar{ display:inline-flex; align-items:center; gap:8px; margin-top:22px; color:var(--lima); font-weight:800; font-size:15px; text-decoration:none; animation:entra .8s .5s var(--ease-out) both; }
+.intro .saltar svg{ width:16px; height:16px; animation:baja 1.6s ease-in-out infinite; }
+@keyframes baja{ 50%{ transform:translateY(4px); } }
+@media (max-width:860px){ .intro .lead{ font-size:16.5px; margin-top:12px; } .intro .saltar{ display:none; } }
+
+/* el próximo evento, destacado junto al titular */
+.destacado{ position:relative; display:block; text-decoration:none; color:var(--tinta); background:var(--papel); border-radius:8px; overflow:hidden;
+  box-shadow:0 40px 70px -28px rgba(0,0,0,.6), 0 12px 24px -12px rgba(0,0,0,.3); transition:transform .5s var(--ease-out); animation:entra .9s .2s var(--ease-out) both; }
+.destacado:hover{ transform:translateY(-6px) rotate(-.4deg); }
+.d-poster{ position:relative; aspect-ratio:16/9; background:var(--c); color:var(--ct); overflow:hidden; }
+.d-poster img{ width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block; transition:transform 1.4s var(--ease-out); }
+.destacado:hover .d-poster img{ transform:scale(1.045); }
+.d-gen{ position:absolute; inset:0; padding:18px 24px; display:flex; flex-direction:column; justify-content:flex-end; }
+.d-gen .dia{ font-size:clamp(92px,11vw,150px); font-weight:900; letter-spacing:-.07em; line-height:.78; }
+.d-gen .mes{ font-size:17px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; margin-top:8px; }
+.d-gen .sig{ position:absolute; right:8%; bottom:-5%; width:min(25%,130px); animation:flota 5s ease-in-out infinite; }
+.d-etq{ position:absolute; top:14px; left:14px; z-index:2; background:var(--lima); color:var(--tinta); font-weight:800; font-size:12.5px; padding:4px 11px; border-radius:999px; box-shadow:0 4px 10px -4px rgba(0,0,0,.4); }
+.d-info{ padding:18px 22px 20px; }
+.d-fecha{ display:block; font-size:13.5px; font-weight:800; color:var(--azul); }
+.d-fecha::first-letter{ text-transform:uppercase; }
+.d-info h2{ margin:5px 0 0; font-size:clamp(26px,3vw,34px); font-weight:900; letter-spacing:-.045em; line-height:1; }
+.d-con{ display:flex; align-items:center; gap:10px; margin-top:12px; font-size:14px; font-weight:600; color:rgba(13,17,20,.72); }
+.caras{ display:flex; flex:none; }
+.caras .avatar{ width:30px; height:30px; font-size:11px; margin-left:-8px; box-shadow:0 0 0 2px var(--papel); }
+.caras .avatar:first-child{ margin-left:0; }
+.d-pie{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:16px; padding-top:14px; border-top:2px dashed rgba(13,17,20,.2); }
+.d-precio{ font-size:26px; font-weight:900; letter-spacing:-.04em; line-height:1; }
+.d-precio small{ font-size:12px; font-weight:800; margin-left:3px; opacity:.6; letter-spacing:.03em; }
+.d-quedan{ display:block; margin-top:4px; font-size:12.5px; font-weight:800; color:var(--rojo); }
+.d-pie .btn{ padding:12px 20px; font-size:15.5px; }
+.destacado:hover .d-pie .btn{ background:var(--c); color:var(--ct); }
+.destacado.c-lima:hover .d-pie .btn, .destacado.c-tinta:hover .d-pie .btn{ background:var(--rojo); color:var(--papel); }
+
+/* invitados (avatar: foto o iniciales sobre el color del evento) */
+.avatar{ display:grid; place-items:center; width:72px; height:72px; border-radius:50%; flex:none; background:var(--c) center 25%/cover no-repeat; color:var(--ct);
+  font-weight:900; font-size:24px; letter-spacing:-.02em; overflow:hidden; }
+
+/* desfile: los signos caminan sobre la cinta */
+.desfile{ position:relative; height:74px; margin:84px -20px 0; overflow:hidden; pointer-events:none; }
+.caminante{ position:absolute; bottom:-2px; left:0; width:var(--w); animation:camina var(--dur) linear infinite; animation-delay:var(--dl); }
+.caminante .bicho{ --t:.42s; }
+@keyframes camina{ from{ transform:translateX(-120px); } to{ transform:translateX(min(100vw, 1080px)); } }
+
+.cinta{ position:relative; z-index:2; margin:0 -20px; background:var(--lima); color:var(--tinta); transform:rotate(-1.4deg); overflow:hidden;
+  box-shadow:0 18px 30px -18px rgba(0,0,0,.5); }
+.cinta-in{ display:flex; width:max-content; animation:cinta 38s linear infinite; }
+.cinta span{ flex:none; padding:12px 0; font-weight:900; font-size:17px; letter-spacing:-.01em; white-space:nowrap; }
+.cinta i{ font-style:normal; color:var(--rojo); margin:0 18px; }
+@keyframes cinta{ to{ transform:translateX(-50%); } }
+@media (max-width:560px){ .desfile, .cinta{ margin-left:-16px; margin-right:-16px; } }
+
+/* ---------------- LISTA DE BOLETOS ---------------- */
+.lista{ padding-top:52px; }
+.arranque + .lista{ padding-top:56px; }
+.lista-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; color:var(--papel); padding-bottom:16px; margin-bottom:26px; border-bottom:1.5px solid rgba(250,246,241,.25); }
+.lista-head h2{ margin:0; font-size:clamp(30px,4.4vw,44px); font-weight:900; letter-spacing:-.04em; line-height:1; }
+.lista-head span{ font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; opacity:.7; }
+.boletos{ list-style:none; margin:0; padding:0; display:grid; gap:22px; }
+
+.reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s var(--ease-out), transform .7s var(--ease-out); transition-delay:calc(var(--i,0) * 80ms); }
+.reveal.visto{ opacity:1; transform:none; }
+
+.item{ position:relative; filter:drop-shadow(0 22px 26px rgba(0,0,0,.28)) drop-shadow(0 4px 6px rgba(0,0,0,.18)); }
+.item > .mueve{ transition:transform .45s var(--ease-out); }
+.item:hover > .mueve{ transform:translateY(-5px) rotate(-.35deg); }
+.boleto{
+  --talon:168px; --r:13px;
+  position:relative; display:grid; grid-template-columns:118px 1fr var(--talon); min-height:156px;
+  background:var(--papel); border-radius:6px; text-decoration:none; color:var(--tinta);
+  -webkit-mask:
+    radial-gradient(circle at calc(100% - var(--talon)) 0, #0000 var(--r), #000 calc(var(--r) + .5px)) top / 100% 51% no-repeat,
+    radial-gradient(circle at calc(100% - var(--talon)) 100%, #0000 var(--r), #000 calc(var(--r) + .5px)) bottom / 100% 51% no-repeat;
+          mask:
+    radial-gradient(circle at calc(100% - var(--talon)) 0, #0000 var(--r), #000 calc(var(--r) + .5px)) top / 100% 51% no-repeat,
+    radial-gradient(circle at calc(100% - var(--talon)) 100%, #0000 var(--r), #000 calc(var(--r) + .5px)) bottom / 100% 51% no-repeat;
+}
+.boleto.con-foto{ grid-template-columns:118px 150px 1fr var(--talon); }
+.b-foto{ background:var(--papel-3) center 30%/cover no-repeat; }
+.b-fecha{ background:var(--c); color:var(--ct); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px 8px; text-transform:uppercase; }
+.b-fecha .s{ font-size:12px; font-weight:800; letter-spacing:.12em; opacity:.85; }
+.b-fecha .d{ font-size:58px; font-weight:900; letter-spacing:-.06em; line-height:.9; margin:4px 0 2px; font-variant-numeric:tabular-nums; }
+.b-fecha .m{ font-size:15px; font-weight:900; letter-spacing:.08em; }
+.b-cuerpo{ padding:22px 26px; display:flex; flex-direction:column; justify-content:center; min-width:0; }
+.b-meta{ font-size:13px; font-weight:800; color:var(--azul); letter-spacing:.01em; display:flex; flex-wrap:wrap; gap:4px 12px; }
+.b-meta span{ display:inline-flex; align-items:center; gap:5px; }
+.b-meta svg{ width:13px; height:13px; }
+.b-cuerpo h3{ margin:6px 0 0; font-size:clamp(23px,2.8vw,30px); font-weight:900; letter-spacing:-.04em; line-height:1.02; }
+.b-cuerpo p{ margin:8px 0 0; font-size:15px; line-height:1.4; color:rgba(13,17,20,.72); max-width:52ch; }
+.b-talon{ border-left:2px dashed rgba(13,17,20,.22); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:16px 14px; text-align:center; }
+.b-precio{ font-size:30px; font-weight:900; letter-spacing:-.04em; line-height:1; }
+.b-precio small{ font-size:12px; font-weight:800; letter-spacing:.04em; margin-left:2px; opacity:.6; }
+.b-quedan{ font-size:12.5px; font-weight:800; color:var(--rojo); }
+.b-ir{ margin-top:8px; display:inline-flex; align-items:center; gap:6px; font-size:14px; font-weight:800; padding:7px 14px; border-radius:999px; background:var(--tinta); color:var(--papel);
+  transition:background-color .2s, color .2s, gap .3s var(--ease-out); }
+.item:hover .b-ir{ background:var(--c); color:var(--ct); gap:10px; }
+.b-ir svg{ width:14px; height:14px; }
+.b-signo{ position:absolute; z-index:-1; right:calc(var(--talon, 168px) + 28px); top:0; width:46px; transform:translateY(22px) rotate(8deg); opacity:0;
+  transition:transform .55s var(--ease-spring), opacity .3s; pointer-events:none; }
+.item:hover .b-signo{ transform:translateY(-48px) rotate(-4deg); opacity:1; }
+.sello{ position:absolute; top:50%; right:22px; transform:translateY(-50%) rotate(-14deg); border:3px solid var(--rojo); color:var(--rojo); border-radius:4px;
+  padding:3px 10px; font-weight:900; font-size:22px; letter-spacing:.04em; text-transform:uppercase; background:rgba(250,246,241,.86); mix-blend-mode:multiply; }
+.visto .sello{ animation:sella .5s .35s var(--ease-spring) both; }
+@keyframes sella{ from{ transform:translateY(-50%) rotate(-14deg) scale(2.2); opacity:0; } to{ transform:translateY(-50%) rotate(-14deg) scale(1); opacity:1; } }
+.agotado .b-precio, .agotado .b-ir{ opacity:.3; }
+
+@media (max-width:640px){
+  .boleto{ --th:58px; grid-template-columns:84px 1fr; grid-template-rows:1fr var(--th); min-height:0;
+    -webkit-mask:
+      radial-gradient(circle at 0 calc(100% - var(--th)), #0000 var(--r), #000 calc(var(--r) + .5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% calc(100% - var(--th)), #0000 var(--r), #000 calc(var(--r) + .5px)) right / 51% 100% no-repeat;
+            mask:
+      radial-gradient(circle at 0 calc(100% - var(--th)), #0000 var(--r), #000 calc(var(--r) + .5px)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% calc(100% - var(--th)), #0000 var(--r), #000 calc(var(--r) + .5px)) right / 51% 100% no-repeat; }
+  .boleto.con-foto{ grid-template-columns:84px 1fr; }
+  .b-foto{ display:none; }
+  .b-fecha{ grid-row:1 / 3; }
+  .b-fecha .d{ font-size:42px; }
+  .b-cuerpo{ padding:16px 16px 14px; }
+  .b-cuerpo p{ display:none; }
+  .b-talon{ grid-column:2; border-left:0; border-top:2px dashed rgba(13,17,20,.22); flex-direction:row; justify-content:space-between; padding:0 12px 0 16px; }
+  .b-precio{ font-size:22px; }
+  .b-ir{ margin:0; }
+  .b-quedan{ margin-right:auto; margin-left:10px; }
+  .b-signo{ display:none; }
+  .sello{ top:34%; right:12px; font-size:17px; }
+}
+
+.vacio{ background:var(--papel); border-radius:6px; padding:48px 28px; text-align:center; }
+.vacio .bicho{ width:74px; margin:0 auto 14px; }
+.vacio h3{ margin:0; font-size:26px; font-weight:900; letter-spacing:-.03em; }
+.vacio p{ margin:8px auto 0; max-width:40ch; color:var(--gris); }
+
+.esqueleto{ height:156px; border-radius:6px; background:linear-gradient(100deg, rgba(250,246,241,.10) 30%, rgba(250,246,241,.2) 50%, rgba(250,246,241,.10) 70%) 0 0/300% 100%; animation:brillo 1.4s linear infinite; }
+@keyframes brillo{ to{ background-position:-150% 0; } }
+
+.pasados{ margin-top:56px; color:var(--papel); }
+.pasados summary{ cursor:pointer; list-style:none; display:inline-flex; align-items:center; gap:10px; font-weight:800; font-size:15px; padding:9px 16px; border-radius:999px; box-shadow:inset 0 0 0 1.5px rgba(250,246,241,.45); }
+.pasados summary::-webkit-details-marker{ display:none; }
+.pasados summary svg{ width:14px; height:14px; transition:transform .3s var(--ease-out); }
+.pasados[open] summary svg{ transform:rotate(180deg); }
+.pasados .boletos{ margin-top:22px; }
+.pasados .item{ filter:grayscale(.9) drop-shadow(0 14px 18px rgba(0,0,0,.25)); opacity:.75; }
+
+/* ---------------- DETALLE ---------------- */
+.volver{ display:inline-flex; align-items:center; gap:8px; margin:34px 0 22px; color:var(--papel); font-weight:800; font-size:15px; text-decoration:none; opacity:.85; }
+.volver:hover{ opacity:1; }
+.volver svg{ width:16px; height:16px; transition:transform .25s var(--ease-out); }
+.volver:hover svg{ transform:translateX(-4px); }
+.det-grid{ display:grid; grid-template-columns:minmax(0,1fr) 380px; gap:28px; align-items:start; }
+@media (max-width:900px){ .det-grid{ grid-template-columns:1fr; } }
+.det-hoja{ background:var(--papel); border-radius:6px; overflow:hidden; box-shadow:0 40px 70px -28px rgba(0,0,0,.55), 0 12px 24px -12px rgba(0,0,0,.3); }
+.poster{ position:relative; aspect-ratio:16/9; background:var(--c); color:var(--ct); overflow:hidden; }
+.poster img.foto{ width:100%; height:100%; object-fit:cover; object-position:center 30%; display:block; animation:acerca 14s ease-out both; }
+@keyframes acerca{ from{ transform:scale(1.08); } to{ transform:scale(1); } }
+.poster-gen{ position:absolute; inset:0; padding:26px 30px; display:flex; flex-direction:column; justify-content:space-between; }
+.poster-gen .pg-dia{ font-size:clamp(110px,22vw,210px); font-weight:900; letter-spacing:-.07em; line-height:.78; }
+.poster-gen .pg-mes{ font-size:clamp(18px,2.6vw,26px); font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
+.poster-gen .pg-bicho{ position:absolute; right:7%; bottom:-4%; width:min(30%, 190px); animation:flota 5s ease-in-out infinite; }
+.poster-gen::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:soft-light;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.poster .p-signo{ position:absolute; right:22px; bottom:-14px; width:84px; z-index:2; transform:rotate(6deg); }
+.det-cuerpo{ padding:34px 40px 42px; }
+@media (max-width:560px){ .det-cuerpo{ padding:26px 20px 30px; } .poster-gen{ padding:18px 20px; } }
+.det-cuerpo .cuando{ display:block; font-size:14px; font-weight:800; color:var(--azul); }
+.det-cuerpo .cuando::first-letter{ text-transform:uppercase; }
+.det-cuerpo h1{ margin:8px 0 0; font-size:clamp(36px,5.6vw,62px); font-weight:900; letter-spacing:-.05em; line-height:.95; }
+.det-sub{ margin:14px 0 0; font-size:20px; line-height:1.4; color:rgba(13,17,20,.74); max-width:46ch; }
+.meta{ display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:0; margin:30px 0 0; border-top:1.5px solid var(--tinta); }
+.meta div{ padding:14px 16px 14px 0; border-bottom:1px solid var(--linea); }
+.meta dt{ font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
+.meta dd{ margin:3px 0 0; font-weight:800; font-size:16.5px; line-height:1.3; }
+.meta dd::first-letter{ text-transform:uppercase; }
+.meta dd small{ display:block; font-weight:500; font-size:14px; color:var(--gris); }
+.meta dd a{ font-size:14px; font-weight:700; color:var(--azul); }
+.con{ margin-top:30px; }
+.con h2{ margin:0 0 14px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
+.invitados{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:16px 20px; }
+.invitado{ display:flex; gap:14px; align-items:center; }
+.invitado .avatar{ box-shadow:0 0 0 3px var(--papel), 0 0 0 4.5px var(--c); }
+.invitado b{ display:block; font-size:17px; font-weight:900; letter-spacing:-.025em; line-height:1.15; }
+.invitado .rol{ margin-top:2px; font-size:14px; line-height:1.35; color:var(--gris); }
+.invitado .rol p{ margin:0; }
+.desc a{ color:var(--azul); font-weight:700; }
+.desc{ margin-top:30px; font-size:17.5px; line-height:1.62; max-width:62ch; }
+.desc p{ margin:0 0 1em; }
+.desc > p:first-child::first-letter{ float:left; font-size:3.3em; line-height:.86; font-weight:900; margin:.06em .1em 0 0; color:var(--c); -webkit-text-stroke:0; }
+.c-lima .desc p:first-child::first-letter{ color:var(--azul); }
+
+/* panel de compra */
+.compra{ position:sticky; top:20px; }
+.compra-in{ position:relative; background:var(--tinta); color:var(--papel); border-radius:6px; padding:26px 24px 24px;
+  box-shadow:0 40px 70px -28px rgba(0,0,0,.6); }
+.compra-top{ position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding-bottom:24px; margin-bottom:22px; border-bottom:2px dashed rgba(250,246,241,.2); }
+.compra-top::before, .compra-top::after{ content:""; position:absolute; bottom:-12px; width:22px; height:22px; border-radius:50%; background:var(--fondo); }
+.compra-top::before{ left:-35px; } .compra-top::after{ right:-35px; }
+.compra-top .tipo{ font-size:13px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; opacity:.7; }
+.compra-top .precio{ display:block; margin-top:4px; font-size:44px; font-weight:900; letter-spacing:-.05em; line-height:1; color:var(--lima); }
+.compra-top .precio small{ font-size:14px; letter-spacing:.02em; margin-left:4px; color:var(--papel); opacity:.6; }
+.compra-top .sig{ flex:none; width:60px; height:60px; border-radius:50%; background:var(--c); display:grid; place-items:center; transform:rotate(8deg); }
+.compra-top .sig .bicho{ width:30px; }
+.c-tinta .compra-top .sig{ background:var(--papel); }
+.cupo{ margin:-6px 0 20px; font-size:13px; font-weight:700; color:rgba(250,246,241,.7); }
+.cupo-barra{ height:5px; border-radius:99px; background:rgba(250,246,241,.14); overflow:hidden; margin-bottom:7px; }
+.cupo-barra i{ display:block; height:100%; width:calc(var(--p) * 100%); background:var(--rojo); border-radius:99px; transform-origin:left; animation:llena 1.2s .3s var(--ease-out) both; }
+@keyframes llena{ from{ transform:scaleX(0); } }
+.compra .lbl{ display:block; font-size:14px; font-weight:700; margin-bottom:6px; }
+.compra .input{ background:rgba(250,246,241,.06); border-color:rgba(250,246,241,.3); color:var(--papel); }
+.compra .input::placeholder{ color:rgba(250,246,241,.36); }
+.compra .input:focus{ border-color:var(--lima); box-shadow:0 0 0 3px rgba(195,215,58,.22); background:rgba(250,246,241,.1); }
+.compra .msg{ color:#ff8a73; }
+.compra .field.bad .input{ border-color:#ff8a73; }
+.paso{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.paso .lbl{ margin:0; }
+.stepper{ display:flex; align-items:center; gap:4px; background:rgba(250,246,241,.08); border-radius:999px; padding:4px; }
+.stepper button{ width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--papel); font-size:22px; font-weight:700; line-height:1; cursor:pointer; transition:background-color .15s, transform .15s var(--ease-out); }
+.stepper button:hover:not(:disabled){ background:rgba(250,246,241,.14); }
+.stepper button:active:not(:disabled){ transform:scale(.88); }
+.stepper button:disabled{ opacity:.3; cursor:default; }
+.stepper output{ min-width:30px; text-align:center; font-weight:900; font-size:19px; font-variant-numeric:tabular-nums; }
+.total{ display:flex; justify-content:space-between; align-items:baseline; padding:16px 0 18px; margin-top:4px; border-top:1px solid rgba(250,246,241,.16); }
+.total span{ font-weight:700; opacity:.75; }
+.total b{ font-size:28px; font-weight:900; letter-spacing:-.04em; font-variant-numeric:tabular-nums; display:inline-block; }
+.total b.salta{ animation:salta .4s var(--ease-spring); }
+@keyframes salta{ 40%{ transform:translateY(-5px) scale(1.06); color:var(--lima); } }
+.compra .btn{ width:100%; }
+.fino{ display:flex; gap:8px; align-items:flex-start; margin:14px 0 0; font-size:13px; line-height:1.4; color:rgba(250,246,241,.62); }
+.fino svg{ width:15px; height:15px; flex:none; margin-top:1px; }
+.senderr{ display:none; margin:14px 0 0; padding:11px 13px; border:1.5px solid var(--rojo); border-radius:3px; color:#ff8a73; font-weight:700; font-size:14px; }
+.senderr.on{ display:block; animation:sacude .4s; }
+@keyframes sacude{ 20%,60%{ transform:translateX(-5px); } 40%,80%{ transform:translateX(5px); } }
+.cerrado{ text-align:center; padding:8px 0 4px; }
+.cerrado .sello{ position:static; display:inline-block; transform:rotate(-8deg); background:transparent; mix-blend-mode:normal; color:#ff8a73; border-color:#ff8a73; margin:6px 0 16px; animation:none; }
+.cerrado p{ margin:0 0 18px; color:rgba(250,246,241,.75); }
+.compartir{ margin-top:14px; text-align:center; }
+.compartir button{ background:none; border:0; cursor:pointer; color:var(--papel); font-weight:700; font-size:14px; opacity:.75; text-decoration:underline; text-underline-offset:3px; }
+.compartir button:hover{ opacity:1; }
+
+/* ---------------- BOLETO (después de pagar) ---------------- */
+.exito{ position:relative; text-align:center; color:var(--papel); padding:56px 0 20px; }
+.exito h1{ margin:34px 0 0; font-size:clamp(40px,7vw,76px); font-weight:900; letter-spacing:-.05em; line-height:.95; }
+.exito h1 em{ font-style:normal; color:var(--lima); }
+.exito .lead{ margin:16px auto 0; max-width:46ch; font-size:18px; color:rgba(250,246,241,.82); }
+.exito .acts{ display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-top:28px; }
+.exito .btn--ghost{ color:var(--papel); }
+.impresora{ position:relative; max-width:560px; margin:0 auto; }
+.ranura{ height:18px; border-radius:999px; background:#021d3b; box-shadow:inset 0 3px 6px rgba(0,0,0,.6); position:relative; z-index:2; }
+.sale{ overflow:hidden; margin:-9px 14px 0; padding-bottom:30px; }
+.ticket{ background:var(--papel); color:var(--tinta); text-align:left; border-radius:0 0 6px 6px; animation:imprime 1.6s .3s cubic-bezier(.5,0,.2,1) both;
+  box-shadow:0 26px 40px -20px rgba(0,0,0,.6); }
+@keyframes imprime{ 0%{ transform:translateY(-102%); } 70%{ transform:translateY(2%); } 100%{ transform:none; } }
+.t-cabeza{ background:var(--c); color:var(--ct); padding:22px 24px 18px; display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+.t-cabeza .logo{ width:96px; }
+.t-cabeza .tipo{ font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+.t-cuerpo{ padding:22px 24px 8px; }
+.t-cuerpo h2{ margin:0; font-size:30px; font-weight:900; letter-spacing:-.04em; line-height:1; }
+.t-datos{ display:grid; grid-template-columns:1fr 1fr; gap:14px 18px; margin:20px 0 0; }
+.t-datos dt{ font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--gris); }
+.t-datos dd{ margin:2px 0 0; font-weight:800; font-size:15.5px; line-height:1.25; }
+.t-datos dd::first-letter{ text-transform:uppercase; }
+.t-pie{ margin-top:18px; padding:16px 24px 20px; border-top:2px dashed rgba(13,17,20,.22); display:flex; align-items:center; justify-content:space-between; gap:14px; position:relative; }
+.t-pie::before, .t-pie::after{ content:""; position:absolute; top:-12px; width:22px; height:22px; border-radius:50%; background:var(--fondo); }
+.t-pie::before{ left:-11px; } .t-pie::after{ right:-11px; }
+.folio small{ display:block; font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--gris); }
+.folio b{ font-size:26px; font-weight:900; letter-spacing:.04em; color:var(--rojo); font-variant-numeric:tabular-nums; }
+.barras{ width:150px; height:46px; flex:none; background:repeating-linear-gradient(90deg, var(--tinta) 0 var(--a,2px), transparent 0 var(--b,5px)); opacity:.88; }
+@media (max-width:480px){ .barras{ width:90px; } .t-datos{ grid-template-columns:1fr; } }
+
+.esperando{ padding:70px 0 40px; text-align:center; color:var(--papel); }
+.esperando .bicho{ width:90px; margin:0 auto 22px; animation:flota 1.6s ease-in-out infinite; }
+.esperando h1{ margin:0; font-size:clamp(32px,5vw,48px); font-weight:900; letter-spacing:-.04em; }
+.esperando p{ margin:12px auto 0; max-width:42ch; color:rgba(250,246,241,.78); }
+
+.desfile-fijo{ display:inline-flex; justify-content:center; align-items:flex-end; gap:18px; margin:44px auto 0; padding:16px 24px 12px; background:var(--papel); border-radius:4px; transform:rotate(-1deg); }
+.desfile-fijo .bicho{ height:58px; width:auto; --t:.5s; }
+.desfile-fijo .bicho:nth-child(2){ --d:-.2s; } .desfile-fijo .bicho:nth-child(3){ --d:-.45s; } .desfile-fijo .bicho:nth-child(4){ --d:-.1s; }
+
+/* confeti de signos */
+.confeti{ position:fixed; inset:0; pointer-events:none; z-index:60; overflow:hidden; }
+.confeti span{ position:absolute; top:-60px; left:var(--x); font-weight:900; font-size:var(--s); color:var(--col); line-height:1;
+  animation:cae var(--dur) var(--dl) cubic-bezier(.25,.4,.6,1) forwards; }
+@keyframes cae{ to{ transform:translate(var(--dx), 112vh) rotate(var(--rot)); } }
+
+.aviso-demo{ position:relative; z-index:3; background:var(--lima); color:var(--tinta); text-align:center; font-size:13.5px; font-weight:700; padding:8px 16px; }
+.aviso-demo b{ font-weight:900; }
+footer{ margin-top:80px; padding-top:22px; border-top:1.5px solid rgba(250,246,241,.2); color:rgba(250,246,241,.65); font-size:13.5px; display:flex; flex-wrap:wrap; gap:8px 24px; justify-content:space-between; }
+footer a{ color:var(--papel); }
+</style>
+</head>
+<body class="grano">
+<div class="aviso-demo" id="avisoDemo" hidden><b>Modo demostración:</b> los pagos se simulan y no se cobra nada. Falta conectar Stripe (ver README).</div>
+<div class="sitio">
+  <header class="top">
+    <a class="marca" href="#/" aria-label="Eventos de Perpetuo"><span class="logo" role="img" aria-label="Perpetuo"></span><small>Eventos</small></a>
+    <a class="site" href="https://perpetuo.global" target="_blank" rel="noopener">Leer Perpetuo →</a>
+  </header>
+
+  <main id="vista" tabindex="-1" aria-live="polite"></main>
+
+  <footer>
+    <span>© Perpetuo · <a href="https://perpetuo.global">perpetuo.global</a></span>
+    <span>¿Dudas con tu boleto? Escríbenos a <a href="mailto:general@perpetuo.global">general@perpetuo.global</a></span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/comun.js"></script>
+<script>
+const ICO = {
+  flecha: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  atras: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  reloj: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.4"/></svg>',
+  candado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  baja: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M6 11l6 6 6-6M5 20h14"/></svg>',
+  abajo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'
+};
+
+const vista = document.getElementById("vista");
+const reducido = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let EVENTOS = null;          // null = todavía cargando
+let scrollLista = 0;
+let formTocado = false;
+
+/* ---------------- datos ---------------- */
+try { EVENTOS = JSON.parse(localStorage.getItem(CONFIG.CLAVE_CACHE) || "null"); } catch (e) {}
+
+async function cargarEventos() {
+  try {
+    const { eventos } = await api("eventos");
+    const nuevo = JSON.stringify(eventos), antes = JSON.stringify(EVENTOS);
+    EVENTOS = eventos;
+    try { localStorage.setItem(CONFIG.CLAVE_CACHE, nuevo); } catch (e) {}
+    const r = ruta();
+    if (nuevo !== antes && (r.vista === "lista" || (r.vista === "detalle" && !formTocado))) pintar(false);
+  } catch (e) {
+    console.error(e);
+    if (!EVENTOS) { EVENTOS = []; pintar(false); toast("No pudimos cargar los eventos. Recarga la página.", true); }
+  }
+}
+
+const proximos = () => (EVENTOS || []).filter(e => !e.pasado).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
+const pasados = () => (EVENTOS || []).filter(e => e.pasado).sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 8);
+const color = e => "c-" + (COLORES.includes(e.color) ? e.color : "azul");
+const agotado = e => e.disponibles === 0;
+
+/* ---------------- rutas ---------------- */
+function ruta() {
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  if (h.startsWith("e/")) return { vista: "detalle", slug: h.slice(2) };
+  if (h === "boleto") return { vista: "boleto" };
+  return { vista: "lista" };
+}
+
+function pintar(animar = true) {
+  const r = ruta();
+  if (r.vista === "lista") vistaLista();
+  else if (r.vista === "detalle") vistaDetalle(r.slug);
+  else vistaBoleto();
+  pintarBichos(vista);
+  observar();
+  if (animar) { vista.classList.remove("entra"); void vista.offsetWidth; vista.classList.add("entra"); }
+}
+
+let rutaAnterior = ruta().vista;
+window.addEventListener("hashchange", () => {
+  const r = ruta();
+  if (rutaAnterior === "lista") scrollLista = scrollY;
+  formTocado = false;
+  const cambiar = () => { pintar(); window.scrollTo({ top: r.vista === "lista" ? scrollLista : 0, behavior: "instant" }); };
+  if (document.startViewTransition && !reducido) document.startViewTransition(cambiar); else cambiar();
+  rutaAnterior = r.vista;
+});
+
+/* aparición al hacer scroll */
+const io = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("visto"); io.unobserve(e.target); }
+}), { rootMargin: "0px 0px -8% 0px" }) : null;
+function observar() { vista.querySelectorAll(".reveal:not(.visto)").forEach(el => io ? io.observe(el) : el.classList.add("visto")); }
+
+/* ---------------- LISTA ---------------- */
+const avatar = (p, e) => `<span class="avatar"${p.foto ? ` style="background-image:url('${esc(p.foto)}')"` : ""} aria-hidden="true">${p.foto ? "" : esc(iniciales(p.nombre))}</span>`;
+const nombresCon = l => l.length <= 1 ? esc(l[0]?.nombre || "") : l.slice(0, -1).map(p => esc(p.nombre)).join(", ") + " y " + esc(l[l.length - 1].nombre);
+
+function tarjeta(e, i) {
+  const quedan = e.disponibles != null && e.disponibles > 0 && e.disponibles <= Math.max(10, e.cupo * 0.2);
+  return `
+  <li class="item reveal ${color(e)}${agotado(e) ? " agotado" : ""}" style="--i:${i % 6}">
+    <span class="b-signo" aria-hidden="true"><span data-b="${esc(e.signo)}"></span></span>
+    <div class="mueve">
+      <a class="boleto${e.imagen ? " con-foto" : ""}" href="#/e/${encodeURIComponent(e.slug)}">
+        <div class="b-fecha" aria-hidden="true"><span class="s">${fecha.semana(e.fecha)}</span><span class="d">${fecha.dia(e.fecha)}</span><span class="m">${fecha.mes(e.fecha)}</span></div>
+        ${e.imagen ? `<div class="b-foto" style="background-image:url('${esc(e.imagen)}')" aria-hidden="true"></div>` : ""}
+        <div class="b-cuerpo">
+          <span class="b-meta"><span>${ICO.reloj}${fecha.hora(e.hora)}</span><span>${ICO.pin}${esc(e.lugar)}</span></span>
+          <h3>${esc(e.titulo)}<span class="sr">, ${fecha.larga(e.fecha)}</span></h3>
+          ${e.subtitulo ? `<p>${esc(e.subtitulo)}</p>` : ""}
+        </div>
+        <div class="b-talon">
+          <span class="b-precio">${e.precio > 0 ? dinero(e.precio) + "<small>MXN</small>" : "Gratis"}</span>
+          ${quedan && !e.pasado ? `<span class="b-quedan">${e.disponibles === 1 ? "¡Queda 1!" : "Quedan " + e.disponibles}</span>` : ""}
+          ${e.pasado ? "" : `<span class="b-ir">${agotado(e) ? "Ver" : e.precio > 0 ? "Boletos" : "Registro"}${ICO.flecha}</span>`}
+        </div>
+        ${agotado(e) && !e.pasado ? '<span class="sello">Agotado</span>' : ""}
+      </a>
+    </div>
+  </li>`;
+}
+
+function destacado(e) {
+  const inv = e.invitados || [];
+  const quedan = e.disponibles != null && e.disponibles > 0 && e.disponibles <= Math.max(10, e.cupo * 0.2);
+  return `<a class="destacado ${color(e)}" href="#/e/${encodeURIComponent(e.slug)}">
+    <div class="d-poster">
+      <span class="d-etq">${e.fecha === hoyISO() ? "¡Es hoy!" : "Lo que sigue"}</span>
+      ${e.imagen ? `<img src="${esc(e.imagen)}" alt="">`
+        : `<div class="d-gen" aria-hidden="true"><span class="dia">${fecha.dia(e.fecha)}</span><span class="mes">${fecha.semana(e.fecha)} · ${fecha.mes(e.fecha)}</span><span class="sig"><span data-b="${esc(e.signo)}"></span></span></div>`}
+    </div>
+    <div class="d-info">
+      <span class="d-fecha">${fecha.larga(e.fecha)} · ${fecha.hora(e.hora)} · ${esc(e.lugar)}</span>
+      <h2>${esc(e.titulo)}</h2>
+      ${inv.length ? `<div class="d-con"><span class="caras">${inv.slice(0, 4).map(p => avatar(p, e)).join("")}</span><span>Con ${nombresCon(inv)}</span></div>`
+        : e.subtitulo ? `<div class="d-con">${esc(e.subtitulo)}</div>` : ""}
+      <div class="d-pie">
+        <span><span class="d-precio">${e.precio > 0 ? dinero(e.precio) + "<small>MXN</small>" : "Gratis"}</span>${agotado(e) ? '<span class="d-quedan">Agotado</span>' : quedan ? `<span class="d-quedan">Quedan ${e.disponibles} lugares</span>` : ""}</span>
+        <span class="btn">${agotado(e) ? "Ver evento" : e.precio > 0 ? "Comprar boletos" : "Apartar lugar"} ${ICO.flecha}</span>
+      </div>
+    </div>
+  </a>`;
+}
+
+function vistaLista() {
+  document.title = "Eventos · Perpetuo";
+  const prox = proximos(), pas = pasados();
+  const [primero, ...resto] = prox;
+  const cinta = (prox.length ? prox : [{ titulo: "Pronto, nuevos eventos", fecha: "" }])
+    .map(e => `${esc(e.titulo)}${e.fecha ? " · " + fecha.dia(e.fecha) + " " + fecha.mes(e.fecha) : ""}`);
+  const signos = ["¡", "¿", "·", ","];
+  const tira = Array.from({ length: Math.max(2, Math.ceil(8 / cinta.length)) }, () => cinta).flat()
+    .map((t, i) => `<span>${t}<i>${signos[i % 4]}</i></span>`).join("");
+  const lineas = ["Encuentros", "para leer", "<em>en voz alta</em>."];
+  const caminantes = [["punto", 58, 26, 0], ["coma", 36, 26, -6.5], ["exclamacion", 44, 26, -13], ["interrogacion", 42, 26, -19.5]];
+
+  vista.innerHTML = `
+  <section class="arranque">
+    <div class="intro">
+      <span class="kicker">Perpetuo · En vivo</span>
+      <h1 class="titular">${lineas.map((l, i) => `<span class="l"><span style="--i:${i}">${l}</span></span>`).join("")}</h1>
+      <p class="lead">Lecturas, mesas, talleres y fiestas de la revista. Aparta tu lugar aquí y te llega el boleto al correo.</p>
+      ${resto.length ? `<a class="saltar" href="#todos" onclick="event.preventDefault();document.getElementById('todos').scrollIntoView({behavior:'smooth'})">Ver los ${prox.length} eventos ${ICO.abajo}</a>` : ""}
+    </div>
+    ${EVENTOS === null ? '<div class="esqueleto" style="height:420px"></div>'
+      : primero ? destacado(primero)
+      : `<div class="vacio"><span data-b="interrogacion"></span><h3>Estamos tramando el próximo.</h3>
+         <p>Por ahora no hay eventos abiertos. Suscríbete a <a href="https://perpetuo.global">Perpetuo</a> y te avisamos antes que a nadie.</p></div>`}
+  </section>
+
+  ${resto.length ? `<section class="lista" id="todos" aria-labelledby="hProx">
+    <div class="lista-head"><h2 id="hProx">También en cartelera</h2><span>${resto.length} ${resto.length === 1 ? "evento" : "eventos"} más</span></div>
+    <ol class="boletos">${resto.map(tarjeta).join("")}</ol>
+  </section>` : ""}
+
+  <div class="desfile" aria-hidden="true">${caminantes.map(([b, w, dur, dl]) =>
+    `<span class="caminante" style="--w:${w}px;--dur:${dur}s;--dl:${dl}s"><span data-b="${b}"></span></span>`).join("")}</div>
+  <div class="cinta" aria-hidden="true"><div class="cinta-in">${tira}${tira}</div></div>
+  ${pas.length ? `<details class="pasados"><summary>Eventos pasados ${ICO.abajo}</summary><ol class="boletos">${pas.map(tarjeta).join("")}</ol></details>` : ""}`;
+  const det = vista.querySelector(".pasados");
+  if (det) det.addEventListener("toggle", () => det.open && det.querySelectorAll(".reveal").forEach(el => el.classList.add("visto")));
+}
+
+/* ---------------- DETALLE ---------------- */
+function mapaDe(e) { return e.mapa || (e.direccion ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(e.lugar + ", " + e.direccion) : ""); }
+
+function vistaDetalle(slug) {
+  if (EVENTOS === null) { vista.innerHTML = '<div class="esperando"><span data-b="coma"></span><h1>Cargando…</h1></div>'; return; }
+  const e = EVENTOS.find(x => x.slug === slug);
+  if (!e) {
+    document.title = "Evento no encontrado · Perpetuo";
+    vista.innerHTML = `<a class="volver" href="#/">${ICO.atras} Todos los eventos</a>
+      <div class="vacio"><span data-b="interrogacion"></span><h3>No encontramos ese evento.</h3><p>Quizá cambió de nombre o ya no está abierto.</p>
+      <p style="margin-top:20px"><a class="btn" href="#/">Ver eventos</a></p></div>`;
+    return;
+  }
+  document.title = e.titulo + " · Eventos Perpetuo";
+  const mapa = mapaDe(e);
+  const horario = fecha.hora(e.hora) + (e.horaFin ? " a " + fecha.hora(e.horaFin) : "");
+  vista.innerHTML = `
+  <a class="volver" href="#/">${ICO.atras} Todos los eventos</a>
+  <article class="det-grid ${color(e)}">
+    <div class="det-hoja">
+      <div class="poster">
+        ${e.imagen ? `<img class="foto" src="${esc(e.imagen)}" alt=""><span class="p-signo" aria-hidden="true"><span data-b="${esc(e.signo)}"></span></span>`
+          : `<div class="poster-gen" aria-hidden="true"><span class="pg-mes">${fecha.semana(e.fecha)} · ${fecha.mes(e.fecha)}</span><span class="pg-dia">${fecha.dia(e.fecha)}</span>
+             <span class="pg-bicho"><span data-b="${esc(e.signo)}"></span></span></div>`}
+      </div>
+      <div class="det-cuerpo">
+        <span class="cuando">${fecha.conAnio(e.fecha)}</span>
+        <h1>${esc(e.titulo)}</h1>
+        ${e.subtitulo ? `<p class="det-sub">${esc(e.subtitulo)}</p>` : ""}
+        <dl class="meta">
+          <div><dt>Cuándo</dt><dd>${fecha.larga(e.fecha)}<small>${horario}</small></dd></div>
+          <div><dt>Dónde</dt><dd>${esc(e.lugar)}${e.direccion ? `<small>${esc(e.direccion)}</small>` : ""}${mapa ? `<a href="${esc(mapa)}" target="_blank" rel="noopener">Ver mapa →</a>` : ""}</dd></div>
+          <div><dt>Entrada</dt><dd>${e.precio > 0 ? dinero(e.precio) + " MXN" : "Gratis"}<small>${e.precio > 0 ? "por persona" : "con registro"}</small></dd></div>
+        </dl>
+        ${(e.invitados || []).length ? `<section class="con"><h2>Con</h2><ul class="invitados">${e.invitados.map(p =>
+          `<li class="invitado">${avatar(p, e)}<div><b>${esc(p.nombre)}</b>${p.rol ? `<div class="rol">${formato(p.rol)}</div>` : ""}</div></li>`).join("")}</ul></section>` : ""}
+        <div class="desc">${formato(e.descripcion)}</div>
+      </div>
+    </div>
+    <aside class="compra" aria-label="Boletos">${panelCompra(e)}</aside>
+  </article>`;
+  activarCompra(e);
+}
+
+function panelCompra(e) {
+  const pago = e.precio > 0;
+  const cabeza = `<div class="compra-top"><div><span class="tipo">${pago ? "Boleto general" : "Entrada libre"}</span>
+      <b class="precio">${pago ? dinero(e.precio) + "<small>MXN</small>" : "Gratis"}</b></div><span class="sig" aria-hidden="true"><span data-b="${esc(e.signo)}"></span></span></div>`;
+  if (e.pasado || agotado(e)) return `<div class="compra-in">${cabeza}<div class="cerrado">
+      <span class="sello">${e.pasado ? "Ya pasó" : "Agotado"}</span>
+      <p>${e.pasado ? "Este evento ya ocurrió. Gracias a quienes vinieron." : "Se acabaron los lugares. Si se libera alguno, aparecerá aquí."}</p>
+      <a class="btn btn--lima" href="#/">Ver otros eventos</a></div></div>`;
+  const max = Math.min(CONFIG.MAX_BOLETOS, e.disponibles ?? CONFIG.MAX_BOLETOS);
+  const lleno = e.cupo ? 1 - e.disponibles / e.cupo : 0;
+  return `<form class="compra-in" id="compra" novalidate>${cabeza}
+    ${e.cupo ? `<div class="cupo"><div class="cupo-barra"><i style="--p:${Math.max(lleno, .03).toFixed(3)}"></i></div>${e.disponibles <= 20 ? `Quedan ${e.disponibles} de ${e.cupo} lugares` : `Cupo de ${e.cupo} personas`}</div>` : ""}
+    <div class="paso"><span class="lbl" id="lCant">${pago ? "Boletos" : "Lugares"}</span>
+      <div class="stepper" role="group" aria-labelledby="lCant"><button type="button" data-d="-1" aria-label="Uno menos">−</button><output id="cant" aria-live="polite">1</output><button type="button" data-d="1" aria-label="Uno más">+</button></div></div>
+    <label class="field" data-f="nombre"><span class="lbl">Nombre</span>
+      <input class="input" name="nombre" autocomplete="name" placeholder="¿A nombre de quién?" maxlength="120" required><span class="msg">${ERRORES.nombre}</span></label>
+    <label class="field" data-f="correo"><span class="lbl">Correo</span>
+      <input class="input" name="correo" type="email" inputmode="email" autocomplete="email" placeholder="tu@correo.com" maxlength="200" required><span class="msg">${ERRORES.correo}</span></label>
+    ${pago ? `<div class="total"><span>Total</span><b id="total">${dinero(e.precio)}</b></div>` : ""}
+    <button class="btn btn--lima" id="pagar" type="submit" data-max="${max}">${pago ? "Pagar con tarjeta" : "Apartar mi lugar"} ${ICO.flecha}</button>
+    <p class="fino">${pago ? ICO.candado + (CONFIG.API_URL ? "Pago seguro con Stripe. Tus boletos llegan a tu correo al instante." : "Demostración: el pago se simula y no se cobra nada.") : ICO.cal + "Te mandamos la confirmación por correo, con el evento listo para tu calendario."}</p>
+    <div class="senderr" id="senderr" role="alert"></div>
+    <div class="compartir"><button type="button" id="compartir">Compartir este evento</button></div>
+  </form>`;
+}
+
+function activarCompra(e) {
+  const f = document.getElementById("compra");
+  if (!f) return;
+  const out = document.getElementById("cant"), total = document.getElementById("total"), btn = document.getElementById("pagar");
+  const err = document.getElementById("senderr");
+  const max = Number(btn.dataset.max);
+  let n = 1;
+  const [menos, mas] = f.querySelectorAll(".stepper button");
+  const ajustar = () => {
+    out.textContent = n; menos.disabled = n <= 1; mas.disabled = n >= max;
+    if (total) { total.textContent = dinero(e.precio * n); total.classList.remove("salta"); void total.offsetWidth; total.classList.add("salta"); }
+  };
+  menos.disabled = true; mas.disabled = max <= 1;
+  f.querySelectorAll(".stepper button").forEach(b => b.addEventListener("click", () => { n = Math.min(max, Math.max(1, n + Number(b.dataset.d))); ajustar(); }));
+  f.addEventListener("input", ev => { formTocado = true; ev.target.closest(".field")?.classList.remove("bad"); });
+  document.getElementById("compartir").addEventListener("click", async () => {
+    const url = location.origin + location.pathname + "#/e/" + e.slug;
+    try { if (navigator.share) await navigator.share({ title: e.titulo + " · Perpetuo", url }); else { await navigator.clipboard.writeText(url); toast("Enlace copiado"); } } catch (x) {}
+  });
+
+  f.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    err.classList.remove("on");
+    const datos = { eventoId: e.id, nombre: f.nombre.value.trim(), correo: f.correo.value.trim().toLowerCase(), cantidad: n, volver: location.origin + location.pathname };
+    let ok = true;
+    if (!datos.nombre) { f.querySelector('[data-f="nombre"]').classList.add("bad"); ok = false; }
+    if (!correoOk(datos.correo)) { f.querySelector('[data-f="correo"]').classList.add("bad"); ok = false; }
+    if (!ok) { f.querySelector(".bad input").focus(); return; }
+
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="gira"></span>${e.precio > 0 ? "Te llevamos al pago…" : "Apartando tu lugar…"}`;
+    try {
+      const r = await api("registrar", datos);
+      if (r.url) { location.href = r.url; return; } // a Stripe Checkout
+      guardarBoleto(r.boleto);
+      location.hash = "#/boleto";
+      cargarEventos();
+    } catch (x) {
+      err.textContent = errorTexto(x);
+      err.classList.add("on");
+      btn.disabled = false; btn.innerHTML = original;
+      if (["agotado", "cupo"].includes(x.message)) cargarEventos();
+    }
+  });
+}
+
+/* ---------------- BOLETO ---------------- */
+const CLAVE_BOLETO = "perpetuo-eventos-boleto";
+function guardarBoleto(b) { try { sessionStorage.setItem(CLAVE_BOLETO, JSON.stringify(b)); } catch (e) {} }
+function leerBoleto() { try { return JSON.parse(sessionStorage.getItem(CLAVE_BOLETO) || "null"); } catch (e) { return null; } }
+
+function compacta(f, h) { return f.replace(/-/g, "") + "T" + (h || "00:00").replace(":", "") + "00"; }
+function finDe(e) {
+  if (e.horaFin) return compacta(e.fecha, e.horaFin);
+  const [H, M] = (e.hora || "19:00").split(":").map(Number);
+  return compacta(e.fecha, String(Math.min(H + 2, 23)).padStart(2, "0") + ":" + String(M).padStart(2, "0"));
+}
+function enlaceCalendario(e) {
+  const p = new URLSearchParams({ action: "TEMPLATE", text: e.titulo + " · Perpetuo", dates: compacta(e.fecha, e.hora) + "/" + finDe(e),
+    ctz: "America/Mexico_City", location: [e.lugar, e.direccion].filter(Boolean).join(", "), details: (e.subtitulo || "") + "\n\nhttps://eventos.perpetuo.global/#/e/" + e.slug });
+  return "https://calendar.google.com/calendar/render?" + p;
+}
+function descargarIcs(b) {
+  const e = b.evento, x = s => String(s || "").replace(/[\\,;]/g, m => "\\" + m).replace(/\n/g, "\\n");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Perpetuo//Eventos//ES", "BEGIN:VEVENT",
+    "UID:" + b.folio + "@eventos.perpetuo.global", "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z",
+    "DTSTART;TZID=America/Mexico_City:" + compacta(e.fecha, e.hora), "DTEND;TZID=America/Mexico_City:" + finDe(e),
+    "SUMMARY:" + x(e.titulo + " · Perpetuo"), "LOCATION:" + x([e.lugar, e.direccion].filter(Boolean).join(", ")),
+    "DESCRIPTION:" + x("Folio " + b.folio + " · " + b.cantidad + (b.cantidad === 1 ? " lugar" : " lugares")), "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(new Blob([ics], { type: "text/calendar;charset=utf-8" })), download: "perpetuo-" + e.slug + ".ics" });
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function vistaBoleto(esperando) {
+  if (esperando) {
+    document.title = "Confirmando tu pago · Perpetuo";
+    vista.innerHTML = `<div class="esperando"><span data-b="punto"></span><h1>${esperando}</h1><p>No cierres esta ventana; tarda unos segundos.</p></div>`;
+    return;
+  }
+  const b = leerBoleto();
+  if (!b) { location.replace("#/"); return; }
+  const e = b.evento, nombre = b.nombre.split(" ")[0];
+  document.title = "¡Listo! · " + e.titulo;
+  // barras "de código" derivadas del folio: decorativas pero distintas por boleto
+  const barras = [...b.folio].map(c => c.charCodeAt(0)).reduce((s, c, i) => s + `, var(--tinta) ${i * 12.5}% ${i * 12.5 + (c % 4) + 1.5}%, transparent 0 ${i * 12.5 + (c % 3) + 6}%, var(--tinta) 0 ${i * 12.5 + 7.5 + (c % 2)}%, transparent 0 ${(i + 1) * 12.5}%`, "");
+  vista.innerHTML = `
+  <section class="exito ${color(e)}">
+    <div class="impresora" aria-hidden="false">
+      <div class="ranura"></div>
+      <div class="sale"><div class="ticket">
+        <div class="t-cabeza"><span class="logo" role="img" aria-label="Perpetuo"></span><span class="tipo">${b.estado === "pagado" ? "Boleto" : "Registro"} · ${b.cantidad} ${b.cantidad === 1 ? "lugar" : "lugares"}</span></div>
+        <div class="t-cuerpo">
+          <h2>${esc(e.titulo)}</h2>
+          <dl class="t-datos">
+            <div><dt>Fecha</dt><dd>${fecha.larga(e.fecha)}</dd></div>
+            <div><dt>Hora</dt><dd>${fecha.hora(e.hora)}</dd></div>
+            <div><dt>Lugar</dt><dd>${esc(e.lugar)}</dd></div>
+            <div><dt>A nombre de</dt><dd>${esc(b.nombre)}</dd></div>
+          </dl>
+        </div>
+        <div class="t-pie"><div class="folio"><small>Folio</small><b>${esc(b.folio)}</b></div><span class="barras" style="background:linear-gradient(90deg${barras})" aria-hidden="true"></span></div>
+      </div></div>
+    </div>
+    <h1>¡Nos vemos ahí, <em>${esc(nombre)}</em>!</h1>
+    <p class="lead">Te mandamos ${b.cantidad === 1 ? "tu boleto" : "tus boletos"} a <b>${esc(b.correo)}</b>. Si no lo ves en unos minutos, revisa la carpeta de spam. En la entrada basta con tu folio.</p>
+    <div class="acts">
+      <a class="btn btn--lima" href="${esc(enlaceCalendario(e))}" target="_blank" rel="noopener">${ICO.cal} Agregar a Google Calendar</a>
+      <button class="btn btn--ghost" type="button" id="ics">${ICO.baja} Descargar .ics</button>
+    </div>
+    <div class="desfile-fijo" aria-hidden="true"><span data-b="punto"></span><span data-b="coma"></span><span data-b="exclamacion"></span><span data-b="interrogacion"></span></div>
+    <p style="margin-top:34px"><a class="volver" style="margin:0" href="#/">${ICO.atras} Ver otros eventos</a></p>
+  </section>`;
+  document.getElementById("ics").addEventListener("click", () => descargarIcs(b));
+  confeti();
+}
+
+function confeti() {
+  if (reducido) return;
+  const c = document.createElement("div");
+  c.className = "confeti"; c.setAttribute("aria-hidden", "true");
+  const signos = ["¡", "!", "¿", "?", ".", ",", "·"], cols = ["var(--lima)", "var(--rojo)", "var(--papel)", "var(--lima)"];
+  c.innerHTML = Array.from({ length: 46 }, () => {
+    const r = Math.random;
+    return `<span style="--x:${(r() * 100).toFixed(1)}vw;--s:${(18 + r() * 34).toFixed(0)}px;--col:${cols[Math.floor(r() * 4)]};--dur:${(2.6 + r() * 2.4).toFixed(2)}s;--dl:${(.9 + r() * 1.2).toFixed(2)}s;--dx:${(r() * 160 - 80).toFixed(0)}px;--rot:${(r() * 720 - 360).toFixed(0)}deg">${signos[Math.floor(r() * signos.length)]}</span>`;
+  }).join("");
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 7000);
+}
+
+/* regreso de Stripe: ?pago=ok&session_id=cs_... | ?pago=cancelado */
+async function regresoDePago() {
+  const q = new URLSearchParams(location.search);
+  const pago = q.get("pago");
+  if (!pago) return false;
+  const limpio = location.pathname + location.hash;
+  if (pago === "cancelado") {
+    history.replaceState(null, "", limpio);
+    setTimeout(() => toast("Cancelaste el pago. Tu lugar no se apartó; puedes intentarlo de nuevo."), 400);
+    return false;
+  }
+  const sesion = q.get("session_id");
+  history.replaceState(null, "", location.pathname + "#/boleto");
+  rutaAnterior = "boleto";
+  vistaBoleto("Confirmando tu pago…"); pintarBichos(vista);
+  for (let intento = 0; intento < 8; intento++) {
+    try {
+      const r = await api("confirmar", { session_id: sesion });
+      if (r.boleto && ["pagado", "gratis", "cortesía"].includes(r.estado)) {
+        guardarBoleto(r.boleto); pintar(); cargarEventos(); return true;
+      }
+    } catch (e) { console.error(e); }
+    await new Promise(r => setTimeout(r, 2500));
+  }
+  vista.innerHTML = `<div class="esperando"><span data-b="interrogacion"></span><h1>Tu pago se está procesando</h1>
+    <p>Cuando Stripe lo confirme te llegará el boleto por correo. Si en una hora no lo tienes, escríbenos a <a href="mailto:general@perpetuo.global">general@perpetuo.global</a>.</p>
+    <p style="margin-top:24px"><a class="btn btn--lima" href="#/">Volver a eventos</a></p></div>`;
+  pintarBichos(vista);
+  return true;
+}
+
+/* ---------------- aviso ---------------- */
+let tToast;
+function toast(texto, mal) {
+  const t = document.getElementById("toast");
+  t.textContent = texto; t.classList.toggle("mal", !!mal); t.classList.add("on");
+  clearTimeout(tToast); tToast = setTimeout(() => t.classList.remove("on"), 4200);
+}
+
+/* ---------------- arranque ---------------- */
+if (!CONFIG.API_URL) document.getElementById("avisoDemo").hidden = false;
+regresoDePago().then(atendido => { if (!atendido) pintar(); cargarEventos(); });
+</script>
+</body>
+</html>
