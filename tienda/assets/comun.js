@@ -69,7 +69,7 @@ const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado.
    Los productos de abajo son DE EJEMPLO: sirven para ver dónde va cada cosa. Sin fotos, cada espacio
    se pinta como un hueco rotulado. */
 const Demo = (() => {
-  const K = "perpetuo-tienda-demo-6";
+  const K = "perpetuo-tienda-demo-7";
   const ENVIO = { costo: 100, gratisDesde: 0 }; // gratisDesde 0 = nunca gratis
   const una = n => [{ nombre: "", existencias: n }];
   const gorra = "De seis gajos, con visera curva y bordado al frente.";
@@ -86,10 +86,10 @@ const Demo = (() => {
       { id: "g1", slug: "gorra-coma", nombre: "Gorra Coma", categoria: "Gorras", precio: 500, etiqueta: "", signo: "coma", color: "rojo",
         resumen: "Coral, con la Coma bordada en blanco. Acaba de ocurrírsele una idea.", descripcion: "Coral, con **la Coma** bordada en blanco. Acaba de ocurrírsele una idea.\n\n" + gorra,
         detalles: "Talla única.", imagenes: ["assets/productos/gorra-coma.webp", "assets/productos/gorra-coma-2.webp"], variantes: una(20) },
-      { id: "b1", slug: "bolsa-para-libros", nombre: "Bolsa para libros azul Perpetuo original", categoria: "Bolsas", precio: 500, etiqueta: "", signo: "interrogacion", color: "azul",
+      { id: "b1", slug: "bolsa-para-libros", nombre: "Bolsa para libros azul Perpetuo original", categoria: "Bolsas", precio: 300, etiqueta: "", signo: "interrogacion", color: "azul",
         resumen: "Azul Perpetuo, con un bolsillo exclusivo para libros. Perpetuo eterno.", descripcion: "Azul Perpetuo, con un **bolsillo exclusivo para libros**. Perpetuo eterno.",
         detalles: "Medidas y material, por confirmar.", imagenes: ["assets/productos/bolsa-para-libros.webp"], variantes: una(30) },
-      { id: "s1", slug: "sueter", nombre: "Suéter", categoria: "Ropa", precio: 500, etiqueta: "", signo: "punto", color: "azul",
+      { id: "s1", slug: "sueter", nombre: "Suéter", categoria: "Ropa", precio: 600, etiqueta: "", signo: "punto", color: "azul",
         resumen: "Texto provisional: una o dos líneas sobre el suéter.", descripcion: "Texto provisional. Aquí va la descripción del suéter.",
         detalles: "Material y cuidado, por confirmar.", imagenes: [], variantes: ["CH", "M", "G", "XG"].map(t => ({ nombre: t, existencias: 8 })) }
     ]
