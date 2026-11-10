@@ -19,8 +19,9 @@ Todo está escrito a mano en HTML, CSS y JS, sin paso de compilación, igual que
 
 | Lugar | Qué muestra | Foto |
 |---|---|---|
-| Portada, a la derecha del titular | La pieza **destacada** (columna `destacado`) | Foto 1 de esa pieza |
-| Rejilla "Todo lo que hay" | Todas las piezas publicadas, 3 por fila (2 en celular), con filtro por categoría | Foto 1; al pasar el cursor, la foto 2 |
+| Portada | Una foto grande, a sangre, de la pieza **destacada** (columna `destacado`), junto al titular | Foto 1 de esa pieza |
+| El recorrido | Una pieza por pantalla, en el orden de la columna `orden`: la foto a un lado y, al llegar con el scroll, aparecen el nombre, el `resumen`, el precio y "Ver la pieza" | Foto 1 |
+| Índice | Todas las piezas en una lista, con precio | Sin foto |
 | Página de la pieza | Galería, precio, descripción, tallas, cantidad y "Agregar a la bolsa" | Hasta 5 fotos |
 | Bolsa y recibo | Renglones con miniatura | Foto 1 |
 
@@ -45,7 +46,7 @@ Cada producto es un renglón de la pestaña **Productos** de la hoja:
 **Existencias.** En `variantes` va lo que se fabricó, y no se toca con cada venta: lo disponible es eso menos lo que hay en pedidos `pendiente`, `pagado`, `enviado` o `entregado`. Para resurtir, sube el número.
 
 ## Modo demostración
-Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: ocho productos de ejemplo, pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo")` vuelve a las existencias de ejemplo.
+Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: cinco piezas con nombres y textos provisionales (tres gorras, la tote y el suéter, a $500), pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo-2")` vuelve a las existencias de ejemplo.
 
 Para verlo en la computadora:
 
@@ -58,7 +59,7 @@ y abrir http://localhost:8000.
 ## Flujo de compra
 1. La persona agrega piezas a su bolsa (se guarda en su navegador) y le da clic a **Pagar con tarjeta**.
 2. `Tienda.gs` revisa precios y existencias **contra la hoja** (nunca le cree al navegador), anota el pedido como `pendiente` y crea una sesión de **Stripe Checkout** en pesos y en español. Las piezas quedan apartadas 31 minutos.
-3. En Stripe la persona escribe su correo, su teléfono, su **dirección de envío** y su tarjeta. El envío se cobra ahí: tarifa plana, o gratis a partir de cierto monto (`AJUSTES` en `Tienda.gs`).
+3. En Stripe la persona escribe su correo, su teléfono, su **dirección de envío** y su tarjeta. El envío se cobra ahí: tarifa plana de $100 a todo México (`AJUSTES` en `Tienda.gs`; ahí mismo se puede poner un monto a partir del cual sea gratis).
 4. Stripe la regresa a `?pago=ok&session_id=…`. La página llama a `confirmar` y el backend **le pregunta a Stripe** si la sesión está pagada. Si sí, guarda nombre, correo, teléfono y dirección, marca el pedido como `pagado` y manda el recibo por correo una sola vez.
 5. Si la persona cierra la ventana antes de volver, el disparador `revisarPendientes` (cada 10 min) confirma el pago y manda el recibo de todos modos. Las sesiones que vencen sin pago pasan a `expirado` y liberan las piezas.
 

@@ -69,52 +69,29 @@ const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado.
    Los productos de abajo son DE EJEMPLO: sirven para ver dónde va cada cosa. Sin fotos, cada espacio
    se pinta como un hueco rotulado. */
 const Demo = (() => {
-  const K = "perpetuo-tienda-demo";
-  const ENVIO = { costo: 99, gratisDesde: 1200 };
-  const tallas = (...n) => ["CH", "M", "G", "XG"].map((t, i) => ({ nombre: t, existencias: n[i] }));
+  const K = "perpetuo-tienda-demo-2";
+  const ENVIO = { costo: 100, gratisDesde: 0 }; // gratisDesde 0 = nunca gratis
+  const una = n => [{ nombre: "", existencias: n }];
+  const gorra = "Gabardina de seis gajos, visera curva y broche ajustable.";
+  // Nombres y textos provisionales: se cambian cuando lleguen las fotos y los datos de cada pieza.
   const semilla = () => ({
     pedidos: [],
     productos: [
-      { id: "p1", slug: "playera-punto-y-seguido", nombre: "Playera Punto y seguido", categoria: "Ropa", precio: 450, etiqueta: "Nuevo", destacado: true, signo: "punto", color: "azul",
-        resumen: "Algodón grueso, corte recto, el punto bordado en el pecho.",
-        descripcion: "La playera de la casa. **Algodón peinado de 220 g**, corte recto y cuello que no se cuelga.\n\nEl punto va bordado, no impreso: aguanta las lavadas que haga falta.",
-        detalles: "100 % algodón. Hecha en México.\nLavar con agua fría, del revés. No usar secadora.",
-        imagenes: [], variantes: tallas(6, 12, 9, 4) },
-      { id: "p2", slug: "bolsa-leer-hasta-el-final", nombre: "Bolsa Leer hasta el final", categoria: "Para cargar", precio: 320, etiqueta: "", signo: "exclamacion", color: "rojo",
-        resumen: "Loneta cruda con asas largas. Caben seis libros y un suéter.",
-        descripcion: "Bolsa de loneta cruda de 12 oz con asas largas para colgarla al hombro.\n\nCaben seis libros, un suéter y lo que compres de regreso.",
-        detalles: "38 × 42 cm. Serigrafía a una tinta.\nLavar a mano.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 30 }] },
-      { id: "p3", slug: "sudadera-admiracion", nombre: "Sudadera Admiración", categoria: "Ropa", precio: 890, etiqueta: "", signo: "exclamacion", color: "lima",
-        resumen: "Felpa pesada, sin capucha, con el signo en la espalda.",
-        descripcion: "Sudadera de cuello redondo en felpa perchada de 400 g. Al frente, el logotipo chico; en la espalda, el signo grande.",
-        detalles: "80 % algodón, 20 % poliéster. Hecha en México.\nLavar con agua fría, del revés.",
-        imagenes: [], variantes: tallas(3, 0, 5, 2) },
-      { id: "p4", slug: "libreta-borrador", nombre: "Libreta Borrador", categoria: "Para escribir", precio: 220, etiqueta: "", signo: "coma", color: "tinta",
-        resumen: "Cosida a mano, 96 hojas lisas, lomo descubierto.",
-        descripcion: "Para lo que todavía no es texto. **96 hojas lisas** de papel bond de 90 g, cosidas a mano con el lomo a la vista para que abra plana.",
-        detalles: "14 × 21 cm. Tapas de cartón gris serigrafiado.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 40 }] },
-      { id: "p5", slug: "gorra-coma", nombre: "Gorra Coma", categoria: "Ropa", precio: 380, etiqueta: "", signo: "coma", color: "azul",
-        resumen: "Seis gajos, visera curva, la coma bordada al frente.",
-        descripcion: "Gorra de gabardina de seis gajos con visera curva y broche metálico ajustable. La coma va bordada al frente.",
-        detalles: "100 % algodón. Talla única ajustable.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 18 }] },
-      { id: "p6", slug: "cartel-los-signos", nombre: "Cartel Los signos", categoria: "Para la pared", precio: 280, etiqueta: "Últimas piezas", signo: "interrogacion", color: "rojo",
-        resumen: "Risografía a tres tintas, numerada. Tiraje de 100.",
-        descripcion: "Los cuatro signos de Perpetuo en risografía a tres tintas sobre papel de 200 g. Cada cartel va numerado y viaja enrollado en tubo.",
-        detalles: "A3 (29.7 × 42 cm). Tiraje de 100.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 3 }] },
-      { id: "p7", slug: "calcomanias-los-cuatro", nombre: "Calcomanías Los cuatro", categoria: "Para escribir", precio: 90, etiqueta: "", signo: "punto", color: "lima",
-        resumen: "Los cuatro signos en vinil mate, para la compu o el termo.",
-        descripcion: "Cuatro calcomanías de vinil mate recortadas a la forma: punto, coma, admiración e interrogación.",
-        detalles: "De 5 a 7 cm cada una. Resisten el agua.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 120 }] },
-      { id: "p8", slug: "taza-perpetuo", nombre: "Taza Perpetuo", categoria: "Para la casa", precio: 260, etiqueta: "", signo: "punto", color: "tinta",
-        resumen: "Peltre blanco con el logotipo en tinta. Para el café de las correcciones.",
-        descripcion: "Taza de peltre blanco de 350 ml con el logotipo esmaltado en tinta.",
-        detalles: "350 ml. No apta para microondas.",
-        imagenes: [], variantes: [{ nombre: "", existencias: 0 }] }
+      { id: "g1", slug: "gorra-01", nombre: "Gorra 01", categoria: "Gorras", precio: 500, etiqueta: "", destacado: true, signo: "punto", color: "azul",
+        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la primera gorra.\n\n" + gorra,
+        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
+      { id: "g2", slug: "gorra-02", nombre: "Gorra 02", categoria: "Gorras", precio: 500, etiqueta: "", signo: "coma", color: "rojo",
+        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la segunda gorra.\n\n" + gorra,
+        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
+      { id: "g3", slug: "gorra-03", nombre: "Gorra 03", categoria: "Gorras", precio: 500, etiqueta: "", signo: "exclamacion", color: "lima",
+        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la tercera gorra.\n\n" + gorra,
+        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
+      { id: "b1", slug: "tote", nombre: "Tote", categoria: "Bolsas", precio: 500, etiqueta: "", signo: "interrogacion", color: "tinta",
+        resumen: "Texto provisional: una o dos líneas sobre la bolsa y lo que cabe en ella.", descripcion: "Texto provisional. Aquí va la descripción de la tote.",
+        detalles: "Medidas y material, por confirmar.", imagenes: [], variantes: una(30) },
+      { id: "s1", slug: "sueter", nombre: "Suéter", categoria: "Ropa", precio: 500, etiqueta: "", signo: "punto", color: "azul",
+        resumen: "Texto provisional: una o dos líneas sobre el suéter.", descripcion: "Texto provisional. Aquí va la descripción del suéter.",
+        detalles: "Material y cuidado, por confirmar.", imagenes: [], variantes: ["CH", "M", "G", "XG"].map(t => ({ nombre: t, existencias: 8 })) }
     ]
   });
   const leer = () => { try { return JSON.parse(localStorage.getItem(K)) || semilla(); } catch (e) { return semilla(); } };
@@ -144,7 +121,7 @@ const Demo = (() => {
         return { id: p.id, nombre: p.nombre, variante: v.nombre, cantidad, precio: p.precio };
       });
       const subtotal = items.reduce((s, i) => s + i.precio * i.cantidad, 0);
-      const envio = subtotal >= ENVIO.gratisDesde ? 0 : ENVIO.costo;
+      const envio = ENVIO.gratisDesde && subtotal >= ENVIO.gratisDesde ? 0 : ENVIO.costo;
       const o = { folio: folio(), fecha: new Date().toISOString(), estado: "pendiente", items, subtotal, envio, total: subtotal + envio, nombre: "", correo: "", direccion: "" };
       db.pedidos.push(o); guardar(db);
       console.info("[modo demostración] pedido:", o);
