@@ -20,7 +20,7 @@ Todo está escrito a mano en HTML, CSS y JS, sin paso de compilación, igual que
 | Lugar | Qué muestra | Foto |
 |---|---|---|
 | Portada | Una foto grande, a sangre, de la pieza **destacada** (columna `destacado`), junto al titular | Foto 1 de esa pieza |
-| El recorrido | Una pieza por pantalla, en el orden de la columna `orden`: la foto a un lado y, al llegar con el scroll, aparecen el nombre, el `resumen`, el precio y "Ver la pieza" | Foto 1 |
+| El recorrido | Una pieza por pantalla, en el orden de la columna `orden`: la foto a un lado y, al llegar con el scroll, aparecen el nombre, el `resumen`, el precio y "Ver la pieza" || Foto 1; al pasar el cursor, la foto 2 |
 | Índice | Todas las piezas en una lista, con precio | Sin foto |
 | Página de la pieza | Galería, precio, descripción, tallas, cantidad y "Agregar a la bolsa" | Hasta 5 fotos |
 | Bolsa y recibo | Renglones con miniatura | Foto 1 |
@@ -46,7 +46,7 @@ Cada producto es un renglón de la pestaña **Productos** de la hoja:
 **Existencias.** En `variantes` va lo que se fabricó, y no se toca con cada venta: lo disponible es eso menos lo que hay en pedidos `pendiente`, `pagado`, `enviado` o `entregado`. Para resurtir, sube el número.
 
 ## Modo demostración
-Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: cinco piezas a $500: las tres gorras, ya con foto, y la tote y el suéter, todavía provisionales, pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo-3")` vuelve a las existencias de ejemplo.
+Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: cinco piezas a $500: las tres gorras, ya con foto, y la tote y el suéter, todavía provisionales, pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo-4")` vuelve a las existencias de ejemplo.
 
 Para verlo en la computadora:
 

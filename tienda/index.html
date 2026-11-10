@@ -99,7 +99,7 @@ html{ scroll-behavior:smooth; }
 .c-foto{ display:block; text-decoration:none; }
 .c-foto.reveal{ transform:translateY(40px) scale(.97); transition-duration:1s; }
 .c-foto.reveal.visto{ transform:none; }
-.c-foto .marco img{ transition:transform 1.4s var(--ease-out); }
+.c-foto .marco img{ transition:transform 1.4s var(--ease-out), opacity .35s; }
 .c-foto:hover .marco img{ transform:scale(1.03); }
 .c-texto .reveal{ --i:calc(var(--o) + 2); }
 .c-num{ display:block; font-size:13px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
@@ -144,8 +144,8 @@ html{ scroll-behavior:smooth; }
 .reveal.visto{ opacity:1; transform:none; }
 
 .pieza a{ display:block; text-decoration:none; }
-.pieza .marco img.otra{ opacity:0; }
-.pieza a:hover .marco img.otra{ opacity:1; }
+.marco img.otra{ opacity:0; }
+.pieza a:hover .marco img.otra, .c-foto:hover .marco img.otra{ opacity:1; }
 .pieza a:hover .marco img{ transform:scale(1.03); }
 .p-info{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-top:12px; }
 .p-info h3{ margin:0; font-size:17px; font-weight:800; letter-spacing:-.02em; line-height:1.2; }
@@ -532,7 +532,7 @@ function capitulo(p, i, total) {
   const href = "#/p/" + encodeURIComponent(p.slug);
   return `
   <article class="capitulo">
-    <a class="c-foto reveal" href="${href}" tabindex="-1" aria-hidden="true"><span class="marco">${foto(p, 0)}${etiqueta(p)}</span></a>
+    <a class="c-foto reveal" href="${href}" tabindex="-1" aria-hidden="true"><span class="marco">${foto(p, 0)}${foto(p, 1, "", "otra")}${etiqueta(p)}</span></a>
     <div class="c-texto">
       <span class="c-num reveal" style="--o:0"><b>${dos(i + 1)}</b> / ${dos(total)} · ${esc(p.categoria)}</span>
       <h2 class="reveal" style="--o:1"><a href="${href}">${esc(p.nombre)}</a></h2>

@@ -69,7 +69,7 @@ const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado.
    Los productos de abajo son DE EJEMPLO: sirven para ver dónde va cada cosa. Sin fotos, cada espacio
    se pinta como un hueco rotulado. */
 const Demo = (() => {
-  const K = "perpetuo-tienda-demo-3";
+  const K = "perpetuo-tienda-demo-4";
   const ENVIO = { costo: 100, gratisDesde: 0 }; // gratisDesde 0 = nunca gratis
   const una = n => [{ nombre: "", existencias: n }];
   const gorra = "De seis gajos, con visera curva y bordado al frente.";
@@ -79,13 +79,13 @@ const Demo = (() => {
     productos: [
       { id: "g1", slug: "gorra-coma", nombre: "Gorra Coma", categoria: "Gorras", precio: 500, etiqueta: "", destacado: true, signo: "coma", color: "rojo",
         resumen: "Coral, con la Coma bordada en blanco al frente. Para quien todavía no termina la frase.", descripcion: "Gorra color coral con **la Coma** bordada en blanco al frente.\n\n" + gorra,
-        detalles: "Talla única.", imagenes: ["assets/productos/gorra-coma.webp"], variantes: una(20) },
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-coma.webp", "assets/productos/gorra-coma-2.webp"], variantes: una(20) },
       { id: "g2", slug: "gorra-perpetuo", nombre: "Gorra Perpetuo", categoria: "Gorras", precio: 500, etiqueta: "", signo: "exclamacion", color: "tinta",
         resumen: "Color arena, con el nombre de la revista bordado en negro. La de todos los días.", descripcion: "Gorra color arena con **Perpetuo** bordado en negro al frente.\n\n" + gorra,
-        detalles: "Talla única.", imagenes: ["assets/productos/gorra-perpetuo.webp"], variantes: una(20) },
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-perpetuo.webp", "assets/productos/gorra-perpetuo-2.webp"], variantes: una(20) },
       { id: "g3", slug: "gorra-punto", nombre: "Gorra Punto", categoria: "Gorras", precio: 500, etiqueta: "", signo: "punto", color: "lima",
         resumen: "Verde olivo, con el Punto bordado en blanco, a media zancada.", descripcion: "Gorra verde olivo con **el Punto** bordado en blanco al frente, a media zancada.\n\n" + gorra,
-        detalles: "Talla única.", imagenes: ["assets/productos/gorra-punto.webp"], variantes: una(20) },
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-punto.webp", "assets/productos/gorra-punto-2.webp"], variantes: una(20) },
       { id: "b1", slug: "tote", nombre: "Tote", categoria: "Bolsas", precio: 500, etiqueta: "", signo: "interrogacion", color: "tinta",
         resumen: "Texto provisional: una o dos líneas sobre la bolsa y lo que cabe en ella.", descripcion: "Texto provisional. Aquí va la descripción de la tote.",
         detalles: "Medidas y material, por confirmar.", imagenes: [], variantes: una(30) },
