@@ -38,9 +38,9 @@ html{ scroll-behavior:smooth; }
 #vista.entra > *{ animation:entra .55s var(--ease-out) both; }
 @keyframes entra{ from{ opacity:0; transform:translateY(18px); } to{ opacity:1; transform:none; } }
 
-/* ---------------- MARCO DE FOTO (4:5) ---------------- */
+/* ---------------- MARCO DE FOTO (cuadrado) ---------------- */
 /* Todas las fotos de producto viven en un .marco. Sin foto, se pinta un hueco rotulado. */
-.marco{ position:relative; display:block; aspect-ratio:4/5; background:var(--papel); border-radius:4px; overflow:hidden; }
+.marco{ position:relative; display:block; aspect-ratio:1/1; background:var(--papel); border-radius:4px; overflow:hidden; }
 .marco img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
 .hueco{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:20px; text-align:center; color:var(--gris); }
 .hueco::before{ content:""; position:absolute; inset:12px; border:1.5px dashed rgba(13,17,20,.2); border-radius:3px; }
@@ -79,8 +79,8 @@ html{ scroll-behavior:smooth; }
 .po-foto:hover .po-pie{ gap:14px; }
 @media (max-width:860px){
   .portada{ grid-template-columns:1fr; min-height:0; }
-  .po-foto{ order:-1; height:62svh; }
-  .po-foto .marco{ min-height:0; }
+  .po-foto{ order:-1; }
+  .po-foto .marco{ min-height:0; height:auto; aspect-ratio:1/1; }
   .po-texto{ padding:26px 16px 8px; }
   .titular{ font-size:11.5vw; margin-top:14px; }
   .bajar{ display:none; }
@@ -159,7 +159,7 @@ html{ scroll-behavior:smooth; }
 .vacio .bicho{ width:70px; margin:0 auto 14px; }
 .vacio h3{ margin:0; font-size:26px; font-weight:900; letter-spacing:-.03em; }
 .vacio p{ margin:8px auto 0; max-width:40ch; color:var(--gris); }
-.esqueleto{ aspect-ratio:4/5; border-radius:4px; background:linear-gradient(100deg, var(--papel) 30%, var(--papel-2) 50%, var(--papel) 70%) 0 0/300% 100%; animation:brillo 1.4s linear infinite; }
+.esqueleto{ aspect-ratio:1/1; border-radius:4px; background:linear-gradient(100deg, var(--papel) 30%, var(--papel-2) 50%, var(--papel) 70%) 0 0/300% 100%; animation:brillo 1.4s linear infinite; }
 @keyframes brillo{ to{ background-position:-150% 0; } }
 
 /* cómo funciona: tres notas al pie de la rejilla */
@@ -385,7 +385,7 @@ function foto(p, i, nota, clase) {
   const src = (p.imagenes || [])[i];
   if (src) return `<img${clase ? ` class="${clase}"` : ""} src="${esc(src)}" alt="" loading="lazy">`;
   if (clase) return "";
-  return `<span class="hueco" data-n="${i + 1}"><span class="sig"><span data-b="${esc(p.signo)}"></span></span><b>${nota || "aquí va la foto"}</b><small>Foto ${i + 1} · 4:5 · 1600 × 2000 px</small></span>`;
+  return `<span class="hueco" data-n="${i + 1}"><span class="sig"><span data-b="${esc(p.signo)}"></span></span><b>${nota || "aquí va la foto"}</b><small>Foto ${i + 1} · cuadrada · 1600 × 1600 px</small></span>`;
 }
 function etiqueta(p) {
   if (agotado(p)) return '<span class="etq fin">Agotado</span>';

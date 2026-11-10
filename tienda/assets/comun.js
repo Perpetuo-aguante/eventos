@@ -69,23 +69,23 @@ const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado.
    Los productos de abajo son DE EJEMPLO: sirven para ver dónde va cada cosa. Sin fotos, cada espacio
    se pinta como un hueco rotulado. */
 const Demo = (() => {
-  const K = "perpetuo-tienda-demo-2";
+  const K = "perpetuo-tienda-demo-3";
   const ENVIO = { costo: 100, gratisDesde: 0 }; // gratisDesde 0 = nunca gratis
   const una = n => [{ nombre: "", existencias: n }];
-  const gorra = "Gabardina de seis gajos, visera curva y broche ajustable.";
-  // Nombres y textos provisionales: se cambian cuando lleguen las fotos y los datos de cada pieza.
+  const gorra = "De seis gajos, con visera curva y bordado al frente.";
+  // Las gorras ya tienen foto; sus nombres y textos son una propuesta. La tote y el suéter siguen provisionales.
   const semilla = () => ({
     pedidos: [],
     productos: [
-      { id: "g1", slug: "gorra-01", nombre: "Gorra 01", categoria: "Gorras", precio: 500, etiqueta: "", destacado: true, signo: "punto", color: "azul",
-        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la primera gorra.\n\n" + gorra,
-        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
-      { id: "g2", slug: "gorra-02", nombre: "Gorra 02", categoria: "Gorras", precio: 500, etiqueta: "", signo: "coma", color: "rojo",
-        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la segunda gorra.\n\n" + gorra,
-        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
-      { id: "g3", slug: "gorra-03", nombre: "Gorra 03", categoria: "Gorras", precio: 500, etiqueta: "", signo: "exclamacion", color: "lima",
-        resumen: "Texto provisional: una o dos líneas sobre esta gorra y el personaje que lleva.", descripcion: "Texto provisional. Aquí va la descripción de la tercera gorra.\n\n" + gorra,
-        detalles: "Talla única ajustable.", imagenes: [], variantes: una(20) },
+      { id: "g1", slug: "gorra-coma", nombre: "Gorra Coma", categoria: "Gorras", precio: 500, etiqueta: "", destacado: true, signo: "coma", color: "rojo",
+        resumen: "Coral, con la Coma bordada en blanco al frente. Para quien todavía no termina la frase.", descripcion: "Gorra color coral con **la Coma** bordada en blanco al frente.\n\n" + gorra,
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-coma.webp"], variantes: una(20) },
+      { id: "g2", slug: "gorra-perpetuo", nombre: "Gorra Perpetuo", categoria: "Gorras", precio: 500, etiqueta: "", signo: "exclamacion", color: "tinta",
+        resumen: "Color arena, con el nombre de la revista bordado en negro. La de todos los días.", descripcion: "Gorra color arena con **Perpetuo** bordado en negro al frente.\n\n" + gorra,
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-perpetuo.webp"], variantes: una(20) },
+      { id: "g3", slug: "gorra-punto", nombre: "Gorra Punto", categoria: "Gorras", precio: 500, etiqueta: "", signo: "punto", color: "lima",
+        resumen: "Verde olivo, con el Punto bordado en blanco, a media zancada.", descripcion: "Gorra verde olivo con **el Punto** bordado en blanco al frente, a media zancada.\n\n" + gorra,
+        detalles: "Talla única.", imagenes: ["assets/productos/gorra-punto.webp"], variantes: una(20) },
       { id: "b1", slug: "tote", nombre: "Tote", categoria: "Bolsas", precio: 500, etiqueta: "", signo: "interrogacion", color: "tinta",
         resumen: "Texto provisional: una o dos líneas sobre la bolsa y lo que cabe en ella.", descripcion: "Texto provisional. Aquí va la descripción de la tote.",
         detalles: "Medidas y material, por confirmar.", imagenes: [], variantes: una(30) },

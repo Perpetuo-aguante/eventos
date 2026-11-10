@@ -25,7 +25,7 @@ Todo está escrito a mano en HTML, CSS y JS, sin paso de compilación, igual que
 | Página de la pieza | Galería, precio, descripción, tallas, cantidad y "Agregar a la bolsa" | Hasta 5 fotos |
 | Bolsa y recibo | Renglones con miniatura | Foto 1 |
 
-**Las fotos:** verticales, proporción **4:5**, de 1600 × 2000 px, en JPG o WebP. Se recortan al centro, así que conviene dejar aire alrededor del producto. Orden sugerido por pieza: de frente, el detalle, en uso, por atrás, el empaque. Con dos basta para empezar.
+**Las fotos:** **cuadradas**, de 1600 × 1600 px o más, en JPG o WebP, guardadas en `assets/productos/`. Se recortan al centro, así que conviene dejar aire alrededor del producto. Orden sugerido por pieza: de frente, el detalle, en uso, por atrás, el empaque. Con dos basta para empezar.
 
 Cada producto es un renglón de la pestaña **Productos** de la hoja:
 
@@ -46,7 +46,7 @@ Cada producto es un renglón de la pestaña **Productos** de la hoja:
 **Existencias.** En `variantes` va lo que se fabricó, y no se toca con cada venta: lo disponible es eso menos lo que hay en pedidos `pendiente`, `pagado`, `enviado` o `entregado`. Para resurtir, sube el número.
 
 ## Modo demostración
-Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: cinco piezas con nombres y textos provisionales (tres gorras, la tote y el suéter, a $500), pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo-2")` vuelve a las existencias de ejemplo.
+Con `CONFIG.API_URL` vacío (así viene), todo funciona en el navegador con `localStorage`: cinco piezas a $500: las tres gorras, ya con foto, y la tote y el suéter, todavía provisionales, pago simulado y recibo. En el navegador, `localStorage.removeItem("perpetuo-tienda-demo-3")` vuelve a las existencias de ejemplo.
 
 Para verlo en la computadora:
 
