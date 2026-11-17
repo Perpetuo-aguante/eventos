@@ -274,6 +274,7 @@ html{ scroll-behavior:smooth; }
 .fino svg{ width:15px; height:15px; flex:none; margin-top:1px; }
 .senderr{ display:none; margin:14px 0 0; padding:11px 13px; border:1.5px solid var(--rojo); border-radius:3px; color:#ff8a73; font-weight:700; font-size:14px; }
 .senderr.on{ display:block; animation:sacude .4s; }
+.senderr.amable{ border-color:var(--lima); color:var(--lima); animation:none; }
 @keyframes sacude{ 20%,60%{ transform:translateX(-5px); } 40%,80%{ transform:translateX(5px); } }
 .cerrado{ text-align:center; padding:8px 0 4px; }
 .cerrado .sello{ position:static; display:inline-block; transform:rotate(-8deg); background:transparent; mix-blend-mode:normal; color:#ff8a73; border-color:#ff8a73; margin:6px 0 16px; animation:none; }
@@ -607,7 +608,7 @@ function activarCompra(e) {
 
   f.addEventListener("submit", async ev => {
     ev.preventDefault();
-    err.classList.remove("on");
+    err.classList.remove("on", "amable");
     const datos = { eventoId: e.id, nombre: f.nombre.value.trim(), correo: f.correo.value.trim().toLowerCase(), cantidad: n, volver: location.origin + location.pathname };
     let ok = true;
     if (!datos.nombre) { f.querySelector('[data-f="nombre"]').classList.add("bad"); ok = false; }
@@ -626,6 +627,7 @@ function activarCompra(e) {
     } catch (x) {
       err.textContent = errorTexto(x);
       err.classList.add("on");
+      if (x.message === "registrado") err.classList.add("amable"); // no es un error: ya tiene su lugar
       btn.disabled = false; btn.innerHTML = original;
       if (["agotado", "cupo"].includes(x.message)) cargarEventos();
     }
