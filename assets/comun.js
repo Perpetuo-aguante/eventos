@@ -62,13 +62,34 @@ function pintarBichos(raiz = document) {
 
 /* ---------------- API ---------------- */
 // text/plain evita el preflight de CORS que Apps Script no contesta
+// Google a veces deja colgada una petición a Apps Script (nunca llega al script). En vez de esperar
+// para siempre, cortamos a los pocos segundos y reintentamos. Las acciones que crean algo llevan un
+// identificador «idem» que se repite en cada intento, para que el servidor no las haga dos veces.
+const LECTURAS = ["eventos", "confirmar", "admin.entrar", "admin.estado", "admin.eventos", "admin.resumen", "admin.registros"];
+const INTENTOS = 4;
+const azar = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => "abcdefghijkmnpqrstuvwxyz23456789"[b % 32]).join("");
 async function api(accion, datos = {}) {
   if (!CONFIG.API_URL) return Demo(accion, datos);
-  const r = await fetch(CONFIG.API_URL, {
-    method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify({ accion, ...datos })
-  });
-  const j = await r.json();
+  const lectura = LECTURAS.includes(accion);
+  if (!lectura && !datos.idem) datos.idem = azar(16);
+  if (accion === "admin.guardar" && datos.evento && !datos.evento.id) datos.evento = { ...datos.evento, id: azar(8) };
+  const cuerpo = JSON.stringify({ accion, ...datos });
+  const limite = accion === "admin.subirImagen" ? 40000 : lectura ? 9000 : 15000;
+  let j = null;
+  for (let i = 0; i < INTENTOS && !j; i++) {
+    const corte = new AbortController();
+    const reloj = setTimeout(() => corte.abort(), limite);
+    try {
+      const r = await fetch(CONFIG.API_URL, {
+        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: cuerpo, signal: corte.signal
+      });
+      j = await r.json();
+    } catch (e) {
+      console.warn("Eventos: intento " + (i + 1) + " de " + accion + " sin respuesta", e);
+      if (i < INTENTOS - 1) await new Promise(ok => setTimeout(ok, 400 * (i + 1)));
+    } finally { clearTimeout(reloj); }
+  }
+  if (!j) throw new Error("red");
   if (j.error) throw new Error(j.error);
   return j;
 }
@@ -87,7 +108,8 @@ const ERRORES = {
   datos: "Faltan el título, la fecha o la hora.",
   precio: "Stripe no cobra menos de $10 MXN. Pon 0 para un evento gratis.",
   folio: "No encontramos ese registro.",
-  estado: "Ese registro no está confirmado."
+  estado: "Ese registro no está confirmado.",
+  red: "La conexión con el servidor está lenta. Espera un momento e inténtalo de nuevo; si ya lo intentaste, revisa tu correo antes."
 };
 const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado. Revisa tu conexión e inténtalo de nuevo.";
 
