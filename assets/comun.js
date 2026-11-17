@@ -62,11 +62,11 @@ function pintarBichos(raiz = document) {
 
 /* ---------------- API ---------------- */
 // text/plain evita el preflight de CORS que Apps Script no contesta
-// Google a veces deja colgada una petición a Apps Script (nunca llega al script). En vez de esperar
-// para siempre, cortamos a los pocos segundos y reintentamos. Las acciones que crean algo llevan un
-// identificador «idem» que se repite en cada intento, para que el servidor no las haga dos veces.
+// Google está dejando colgadas muchas peticiones a Apps Script (nunca llegan al script), al azar y de
+// forma independiente. Así que no esperamos a una sola: si la primera no contesta en unos segundos,
+// lanzamos otra en paralelo (y otra…) y nos quedamos con la primera respuesta. Las acciones que crean
+// algo llevan un identificador «idem» igual en todas las copias, para que el servidor las haga una vez.
 const LECTURAS = ["eventos", "confirmar", "admin.entrar", "admin.estado", "admin.eventos", "admin.resumen", "admin.registros"];
-const INTENTOS = 4;
 const azar = n => Array.from(crypto.getRandomValues(new Uint8Array(n)), b => "abcdefghijkmnpqrstuvwxyz23456789"[b % 32]).join("");
 async function api(accion, datos = {}) {
   if (!CONFIG.API_URL) return Demo(accion, datos);
@@ -74,24 +74,31 @@ async function api(accion, datos = {}) {
   if (!lectura && !datos.idem) datos.idem = azar(16);
   if (accion === "admin.guardar" && datos.evento && !datos.evento.id) datos.evento = { ...datos.evento, id: azar(8) };
   const cuerpo = JSON.stringify({ accion, ...datos });
-  const limite = accion === "admin.subirImagen" ? 40000 : lectura ? 9000 : 15000;
-  let j = null;
-  for (let i = 0; i < INTENTOS && !j; i++) {
-    const corte = new AbortController();
-    const reloj = setTimeout(() => corte.abort(), limite);
-    try {
-      const r = await fetch(CONFIG.API_URL, {
-        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: cuerpo, signal: corte.signal
-      });
-      j = await r.json();
-    } catch (e) {
-      console.warn("Eventos: intento " + (i + 1) + " de " + accion + " sin respuesta", e);
-      if (i < INTENTOS - 1) await new Promise(ok => setTimeout(ok, 400 * (i + 1)));
-    } finally { clearTimeout(reloj); }
-  }
-  if (!j) throw new Error("red");
-  if (j.error) throw new Error(j.error);
-  return j;
+  // cada cuánto se lanza otra copia, cuántas como máximo y cuánto esperamos en total
+  const [cada, copias, total] = accion === "admin.subirImagen" ? [12000, 3, 60000] : lectura ? [1500, 10, 25000] : [5000, 7, 45000];
+  const cortes = [];
+  try {
+    return await new Promise((ok, mal) => {
+      let vivas = 0, lanzadas = 0, listo = false, relojCopias;
+      const fin = (f, v) => { if (!listo) { listo = true; clearInterval(relojCopias); clearTimeout(relojTotal); f(v); } };
+      const lanzar = () => {
+        if (listo || lanzadas >= copias) return;
+        lanzadas++; vivas++;
+        const corte = new AbortController(); cortes.push(corte);
+        fetch(CONFIG.API_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: cuerpo, signal: corte.signal })
+          .then(r => r.json())
+          .then(j => j.error ? fin(mal, new Error(j.error)) : fin(ok, j))
+          .catch(e => {
+            vivas--;
+            if (!listo && e.name !== "AbortError") console.warn("Eventos: copia de " + accion + " falló", e);
+            if (!listo && vivas === 0) lanzar(); // si todas fallaron rápido, no esperes al reloj
+          });
+      };
+      const relojTotal = setTimeout(() => fin(mal, new Error("red")), total);
+      relojCopias = setInterval(lanzar, cada);
+      lanzar();
+    });
+  } finally { cortes.forEach(c => c.abort()); }
 }
 
 const ERRORES = {
