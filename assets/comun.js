@@ -116,6 +116,8 @@ const ERRORES = {
   precio: "Stripe no cobra menos de $10 MXN. Pon 0 para un evento gratis.",
   folio: "No encontramos ese registro.",
   estado: "Ese registro no está confirmado.",
+  registrado: "Ya te registraste para este evento. No te preocupes: ya tenemos tu lugar apartado. Tu boleto está en tu correo (revisa también el spam).",
+  duplicado: "Ese correo ya tiene un lugar en este evento.",
   red: "La conexión con el servidor está lenta. Espera un momento e inténtalo de nuevo; si ya lo intentaste, revisa tu correo antes."
 };
 const errorTexto = e => ERRORES[e && e.message] || "Algo falló de nuestro lado. Revisa tu conexión e inténtalo de nuevo.";
