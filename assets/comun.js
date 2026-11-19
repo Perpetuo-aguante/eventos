@@ -14,6 +14,11 @@ function formato(t) {
     .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   return String(t || "").split(/\n\s*\n/).filter(p => p.trim()).map(p => `<p>${p.trim().split("\n").map(linea).join("<br>")}</p>`).join("");
 }
+/* lugares que se marcan como tomados a mano desde el panel (vendidos fuera de la página, apartados para invitados…):
+   cuentan contra el cupo en lo que se ve, sin crear registros ni mandar correos */
+const apartadosDe = e => Math.max(Number(e && e.apartados) || 0, 0);
+const tomados = e => (Number(e.vendidos) || 0) + apartadosDe(e);
+const conApartados = e => e.cupo && e.disponibles != null && apartadosDe(e) ? { ...e, disponibles: Math.max(e.disponibles - apartadosDe(e), 0) } : e;
 const iniciales = n => String(n || "").split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
 
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -114,6 +119,7 @@ const ERRORES = {
   imagen: "La imagen pesa demasiado (máximo 5 MB) o no es JPG, PNG o WebP.",
   datos: "Faltan el título, la fecha o la hora.",
   precio: "Stripe no cobra menos de $10 MXN. Pon 0 para un evento gratis.",
+  apartados: "Los lugares ya tomados no pueden ser más que el cupo.",
   folio: "No encontramos ese registro.",
   estado: "Ese registro no está confirmado.",
   registrado: "Ya te registraste para este evento. No te preocupes: ya tenemos tu lugar apartado. Tu boleto está en tu correo (revisa también el spam).",
@@ -189,7 +195,7 @@ const Demo = (() => {
       if (!correoOk(d.correo || "")) falla("correo");
       const cantidad = Number(d.cantidad);
       if (!(cantidad >= 1 && cantidad <= CONFIG.MAX_BOLETOS)) falla("cantidad");
-      if (e.cupo) { const quedan = e.cupo - ocupados(db, e.id); if (quedan <= 0) falla("agotado"); if (cantidad > quedan) falla("cupo"); }
+      if (e.cupo) { const quedan = e.cupo - ocupados(db, e.id) - apartadosDe(e); if (quedan <= 0) falla("agotado"); if (cantidad > quedan) falla("cupo"); }
       const r = { folio: folio(), fecha: new Date().toISOString(), eventoId: e.id, evento: e.titulo, nombre: d.nombre.trim(), correo: d.correo.trim().toLowerCase(),
         cantidad, total: e.precio * cantidad, estado: e.precio > 0 ? "pendiente" : "gratis", stripeSesion: "", asistio: false };
       db.registros.push(r); guardar(db);
@@ -216,7 +222,7 @@ const Demo = (() => {
     if (accion === "admin.resumen") return { ok: true, eventos: db.eventos.map(stats),
       ventas: db.registros.filter(r => VALIDOS.includes(r.estado)).map(({ stripeSesion, asistio, correo, ...r }) => r) };
     if (accion === "admin.guardar") {
-      const e = { ...d.evento, precio: Number(d.evento.precio) || 0, cupo: Number(d.evento.cupo) || 0 };
+      const e = { ...d.evento, precio: Number(d.evento.precio) || 0, cupo: Number(d.evento.cupo) || 0, apartados: Number(d.evento.apartados) || 0 };
       if (!e.titulo || !e.fecha) falla("datos");
       if (!e.id) e.id = "e" + Date.now().toString(36);
       e.slug = (e.slug || e.titulo).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

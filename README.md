@@ -69,6 +69,7 @@ Después cambia a `sk_live_…`.
 ## Para tener en cuenta
 - **Límite de correos.** Con una cuenta normal de Gmail, Apps Script manda como máximo unos 100 correos al día. Si un evento grande puede pasar de eso, publica el script desde una cuenta de Google Workspace (1,500 al día) o cambia `mandarBoleto_` a un servicio como Resend. En el panel, "Reenviar" sirve para volver a mandar los que fallen; la columna "Correo" dice cuáles salieron.
 - **Reembolsos.** Se hacen en el dashboard de Stripe. Después, en la hoja, cambia el estado del registro a `reembolsado` para liberar el lugar.
+- **Lugares ya tomados.** En el editor, debajo del cupo, el campo *Lugares ya tomados* resta lugares del cupo en el sitio (para boletos vendidos en taquilla, por transferencia o apartados para invitados). No crea registros ni manda correos, y no cuenta como ingreso. El backend lo guarda en la columna `apartados` de la pestaña Eventos: si no existe, agrégala (el panel avisa cuando el servidor no lo guardó).
 - **Precio mínimo.** Stripe no cobra menos de $10 MXN. Para un evento gratis, pon precio 0.
 - **Estados de un evento.** *Publicado* aparece en el sitio. *Borrador* y *oculto* no aparecen. Oculto sirve para quitar un evento sin perder sus registros.
 - **Imágenes.** Las que se suben desde el panel van a la carpeta de Drive "Perpetuo · Eventos · Imágenes", compartidas con cualquiera que tenga el enlace. Si un evento no tiene imagen, se le genera un póster con su color y su signo.
