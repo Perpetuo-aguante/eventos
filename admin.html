@@ -305,7 +305,7 @@ let REGISTROS = [];
 let sucio = false;
 
 const VACIO = { id: "", estado: "borrador", titulo: "", subtitulo: "", fecha: "", hora: "19:00", horaFin: "", lugar: "", direccion: "", mapa: "",
-  descripcion: "", imagen: "", invitados: [], precio: 0, cupo: 0, signo: "punto", color: "azul", notaCorreo: "", slug: "" };
+  descripcion: "", imagen: "", invitados: [], precio: 0, cupo: 0, apartados: 0, signo: "punto", color: "azul", notaCorreo: "", slug: "" };
 const color = e => "c-" + (COLORES.includes(e.color) ? e.color : "azul");
 const adm = (accion, datos) => api(accion, { clave, ...datos });
 
@@ -357,7 +357,7 @@ function pintarLado() {
   const prox = EVENTOS.filter(e => e.fecha >= hoy).sort(orden), pas = EVENTOS.filter(e => e.fecha < hoy).sort(orden).reverse();
   const item = e => `<li><button type="button" class="ev ${color(e)}${e.id === sel ? " sel" : ""}" data-id="${e.id}">
       <span class="chip"><b>${fecha.dia(e.fecha)}</b><span>${fecha.mes(e.fecha)}</span></span>
-      <span><h3>${esc(e.titulo)}</h3><small><span class="pill ${e.estado}">${e.estado}</span>${e.vendidos || 0}${e.cupo ? "/" + e.cupo : ""} lugares</small></span></button></li>`;
+      <span><h3>${esc(e.titulo)}</h3><small><span class="pill ${e.estado}">${e.estado}</span>${tomados(e)}${e.cupo ? "/" + e.cupo : ""} lugares</small></span></button></li>`;
   $("#evsProx").innerHTML = prox.map(item).join("") || '<li style="padding:6px 4px;color:var(--gris);font-size:14px">Ninguno todavía.</li>';
   $("#evsPas").innerHTML = pas.map(item).join("");
   $("#hPas").hidden = !pas.length;
@@ -404,9 +404,9 @@ function pintarPrincipal() {
 }
 
 function stats(e) {
-  const p = e.cupo ? Math.min(e.vendidos / e.cupo, 1) : 0;
+  const p = e.cupo ? Math.min(tomados(e) / e.cupo, 1) : 0;
   return `<div class="stats">
-    <div class="stat"><small>Lugares tomados</small><b>${e.vendidos || 0}</b>${e.cupo ? `<div class="barra-cupo"><i style="width:${(p * 100).toFixed(1)}%"></i></div>` : ""}</div>
+    <div class="stat"><small>Lugares tomados</small><b>${tomados(e)}</b>${e.cupo ? `<div class="barra-cupo"><i style="width:${(p * 100).toFixed(1)}%"></i></div>` : ""}${apartadosDe(e) ? `<span class="nota">${e.vendidos || 0} por la página + ${apartadosDe(e)} a mano</span>` : ""}</div>
     <div class="stat"><small>Cupo</small><b>${e.cupo || "∞"}</b></div>
     <div class="stat"><small>Ingresos</small><b>${dinero(e.ingresos)}</b></div>
     <div class="stat"><small>Precio</small><b>${e.precio > 0 ? dinero(e.precio) : "Gratis"}</b></div></div>`;
@@ -459,6 +459,7 @@ function formulario(e) {
           ${campo("precio", "Precio por persona (MXN)", 'type="number" min="0" step="1" inputmode="numeric"', "0 = gratis, solo registro.")}
           ${campo("cupo", "Cupo", 'type="number" min="0" step="1" inputmode="numeric"', "0 = sin límite.")}
         </div>
+        ${campo("apartados", "Lugares ya tomados <small>Opcional</small>", 'type="number" min="0" step="1" inputmode="numeric"', "Lugares vendidos o apartados fuera de la página (taquilla, invitados, transferencia). Se restan del cupo en el sitio, sin registros ni correos.")}
         <label class="field"><span class="lbl">Nota para el correo de confirmación <small>Opcional</small></span>
           <textarea class="input" name="notaCorreo" rows="3" maxlength="1000" placeholder="Las puertas abren a las 19:00. Trae libreta.">${esc(e.notaCorreo)}</textarea></label>
       </section>
@@ -501,7 +502,7 @@ function filaInvitado(p = {}) {
 
 function leerForm(f) {
   const d = Object.fromEntries(new FormData(f));
-  d.precio = Number(d.precio) || 0; d.cupo = Number(d.cupo) || 0;
+  d.precio = Number(d.precio) || 0; d.cupo = Number(d.cupo) || 0; d.apartados = Math.max(Math.floor(Number(d.apartados) || 0), 0);
   d.invitados = [...f.querySelectorAll(".inv")].map(el => ({
     nombre: el.querySelector('[data-k="nombre"]').value.trim(), rol: el.querySelector('[data-k="rol"]').value.trim(), foto: el.dataset.foto
   })).filter(p => p.nombre);
@@ -616,6 +617,7 @@ function activarFormulario(e) {
     malos.forEach(n => f.querySelector(`[data-f="${n}"]`).classList.add("bad"));
     if (malos.length) { f.querySelector(`[name="${malos[0]}"]`).focus(); toast(ERRORES.datos, true); return; }
     if (d.precio > 0 && d.precio < 10) { f.precio.focus(); toast(ERRORES.precio, true); return; }
+    if (d.cupo && d.apartados > d.cupo) { f.apartados.focus(); toast(ERRORES.apartados, true); return; }
     const b = $("#bGuardar");
     cargando(b, true, "Guardando…");
     try {
@@ -625,7 +627,9 @@ function activarFormulario(e) {
       marcarSucio(false);
       sel = evento.id; history.replaceState(null, "", "#" + sel);
       pintarLado(); pintarPrincipal();
-      toast(evento.estado === "publicado" ? "Guardado y publicado" : "Guardado como " + evento.estado);
+      // si el backend todavía no tiene la columna «apartados», no la guarda: avisamos en vez de fingir que quedó
+      if (d.apartados && apartadosDe(evento) !== d.apartados) toast("Se guardó, pero el servidor no guardó los lugares ya tomados: falta la columna «apartados» en la hoja Eventos.", true);
+      else toast(evento.estado === "publicado" ? "Guardado y publicado" : "Guardado como " + evento.estado);
     } catch (x) { toast(errorTexto(x), true); }
     cargando(b, false);
   };
@@ -698,7 +702,7 @@ function pintarTablero() {
   };
   const prox = RESUMEN.eventos.filter(e => e.fecha >= hoy && e.estado === "publicado").sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora));
   const conCupo = prox.filter(e => e.cupo);
-  const ocupacion = conCupo.length ? Math.round(suma(conCupo, "vendidos") / suma(conCupo, "cupo") * 100) : null;
+  const ocupacion = conCupo.length ? Math.round(conCupo.reduce((s, e) => s + tomados(e), 0) / suma(conCupo, "cupo") * 100) : null;
   const ingresos = suma(act.filter(v => v.estado === "pagado"), "total"), boletos = suma(act, "cantidad");
 
   t.innerHTML = `
@@ -719,11 +723,11 @@ function pintarTablero() {
       <div style="display:grid;gap:16px">
         <section class="tarjeta"><div class="tarjeta-cab"><h2>Próximos eventos<small>Lugares tomados del cupo</small></h2></div>
           ${prox.length ? `<ul class="ocup">${prox.slice(0, 6).map(e => {
-            const p = e.cupo ? Math.min(e.vendidos / e.cupo, 1) : 0;
+            const p = e.cupo ? Math.min(tomados(e) / e.cupo, 1) : 0;
             return `<li class="c-${e.color}"><button type="button" data-id="${e.id}" class="${p >= 1 ? "lleno" : ""}">
               <span class="chip"><b>${fecha.dia(e.fecha)}</b><span>${fecha.mes(e.fecha)}</span></span>
               <span style="min-width:0"><h3>${esc(e.titulo)}</h3>${e.cupo ? `<div class="pista"><i style="width:${Math.max(p * 100, 1.5).toFixed(1)}%"></i></div>` : '<small style="color:var(--gris);font-size:12.5px;font-weight:600">Sin límite de cupo</small>'}</span>
-              <span class="cifra"><b>${e.vendidos}${e.cupo ? "/" + e.cupo : ""}</b>${e.precio > 0 ? dinero(e.ingresos) : "gratis"}</span></button></li>`; }).join("")}</ul>`
+              <span class="cifra"><b>${tomados(e)}${e.cupo ? "/" + e.cupo : ""}</b>${e.precio > 0 ? dinero(e.ingresos) : "gratis"}</span></button></li>`; }).join("")}</ul>`
             : '<p class="vacio-chico">No hay eventos próximos publicados.</p>'}
         </section>
         <section class="tarjeta"><div class="tarjeta-cab"><h2>Lo más reciente</h2></div>

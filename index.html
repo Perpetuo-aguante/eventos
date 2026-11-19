@@ -371,14 +371,15 @@ let scrollLista = 0;
 let formTocado = false;
 
 /* ---------------- datos ---------------- */
-try { EVENTOS = JSON.parse(localStorage.getItem(CONFIG.CLAVE_CACHE) || "null"); } catch (e) {}
+try { EVENTOS = JSON.parse(localStorage.getItem(CONFIG.CLAVE_CACHE) || "null"); if (EVENTOS) EVENTOS = EVENTOS.map(conApartados); } catch (e) {}
 
 async function cargarEventos() {
   try {
     const { eventos } = await api("eventos");
-    const nuevo = JSON.stringify(eventos), antes = JSON.stringify(EVENTOS);
-    EVENTOS = eventos;
-    try { localStorage.setItem(CONFIG.CLAVE_CACHE, nuevo); } catch (e) {}
+    const antes = JSON.stringify(EVENTOS);
+    EVENTOS = eventos.map(conApartados);
+    const nuevo = JSON.stringify(EVENTOS);
+    try { localStorage.setItem(CONFIG.CLAVE_CACHE, JSON.stringify(eventos)); } catch (e) {}
     const r = ruta();
     if (nuevo !== antes && (r.vista === "lista" || (r.vista === "detalle" && !formTocado))) pintar(false);
   } catch (e) {
