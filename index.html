@@ -4,10 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Eventos · Perpetuo</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icono/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icono/apple-touch-icon.png">
 <meta name="description" content="Lecturas, mesas, talleres y fiestas de Perpetuo, revista literaria digital. Aparta tu lugar y recibe tus boletos por correo.">
 <meta property="og:title" content="Eventos · Perpetuo">
 <meta property="og:description" content="Lecturas, mesas, talleres y fiestas de Perpetuo. Aparta tu lugar aquí.">
 <meta property="og:url" content="https://eventos.perpetuo.global">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://eventos.perpetuo.global/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#074990">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -603,7 +611,7 @@ function activarCompra(e) {
   f.querySelectorAll(".stepper button").forEach(b => b.addEventListener("click", () => { n = Math.min(max, Math.max(1, n + Number(b.dataset.d))); ajustar(); }));
   f.addEventListener("input", ev => { formTocado = true; ev.target.closest(".field")?.classList.remove("bad"); });
   document.getElementById("compartir").addEventListener("click", async () => {
-    const url = location.origin + location.pathname + "#/e/" + e.slug;
+    const url = "https://eventos.perpetuo.global/e/" + e.slug + "/"; // con vista previa (scripts/previews.py)
     try { if (navigator.share) await navigator.share({ title: e.titulo + " · Perpetuo", url }); else { await navigator.clipboard.writeText(url); toast("Enlace copiado"); } } catch (x) {}
   });
 
@@ -648,7 +656,7 @@ function finDe(e) {
 }
 function enlaceCalendario(e) {
   const p = new URLSearchParams({ action: "TEMPLATE", text: e.titulo + " · Perpetuo", dates: compacta(e.fecha, e.hora) + "/" + finDe(e),
-    ctz: "America/Mexico_City", location: [e.lugar, e.direccion].filter(Boolean).join(", "), details: (e.subtitulo || "") + "\n\nhttps://eventos.perpetuo.global/#/e/" + e.slug });
+    ctz: "America/Mexico_City", location: [e.lugar, e.direccion].filter(Boolean).join(", "), details: (e.subtitulo || "") + "\n\nhttps://eventos.perpetuo.global/e/" + e.slug + "/" });
   return "https://calendar.google.com/calendar/render?" + p;
 }
 function descargarIcs(b) {

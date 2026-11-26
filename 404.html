@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Eventos · Perpetuo</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<script>
+// /e/<slug> de un evento cuya página todavía no se genera → la página del evento
+var m = location.pathname.match(/^\/e\/([^\/]+)/);
+location.replace(m ? "/#/e/" + m[1] : "/");
+</script>
+</head>
+<body style="background:#074990"></body>
+</html>

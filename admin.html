@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <title>Panel de eventos · Perpetuo</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icono/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icono/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
@@ -480,7 +483,7 @@ function formulario(e) {
         <div class="field"><div class="segmento">${[["publicado", "Publicado"], ["borrador", "Borrador"], ["oculto", "Oculto"]].map(([v, t]) =>
           `<label><input type="radio" name="estado" value="${v}"${e.estado === v ? " checked" : ""}><span>${t}</span></label>`).join("")}</div>
           <span class="ayuda">Borrador y oculto no aparecen en el sitio. Oculto sirve para cerrar un evento sin borrar sus registros.</span></div>
-        ${campo("slug", "Dirección del evento", 'maxlength="80" placeholder="se genera con el título"', `eventos.perpetuo.global/#/e/<b id="slugVer">${esc(e.slug || "…")}</b>`)}
+        ${campo("slug", "Dirección del evento", 'maxlength="80" placeholder="se genera con el título"', `eventos.perpetuo.global/e/<b id="slugVer">${esc(e.slug || "…")}</b>`)}
       </section>
     </div>
     <aside class="previa" aria-label="Vista previa">

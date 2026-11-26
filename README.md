@@ -10,6 +10,9 @@ eventos.perpetuo.global: la cartelera pública de eventos de Perpetuo, con venta
 - `assets/partes/`, `assets/logo.webp`: copiados de `ia-literatura`.
 - `Eventos.gs`: el backend en Apps Script. No se publica: va en script.google.com y está en `.gitignore`.
 - `CNAME`: `eventos.perpetuo.global` para GitHub Pages.
+- `favicon.ico`, `assets/icono/`: el ícono de la pestaña (Punto). El mismo está en los demás subdominios de Perpetuo.
+- `e/<slug>/`: una página por evento con su imagen para la vista previa al compartir. **No se edita a mano**: la genera `scripts/previews.py` (ver abajo).
+- `404.html`: si alguien abre `/e/<slug>` de un evento cuya página todavía no se genera, lo manda a `/#/e/<slug>`.
 
 Todo está escrito a mano en HTML, CSS y JS, sin paso de compilación, igual que `escribe` e `ia-literatura`.
 
@@ -65,6 +68,13 @@ Con `sk_test_…`, compra un boleto con la tarjeta `4242 4242 4242 4242` (cualqu
 - y el cupo baje.
 
 Después cambia a `sk_live_…`.
+
+## Vista previa al compartir
+WhatsApp, iMessage, Facebook y compañía no leen lo que va después de `#`, así que un enlace `/#/e/slug` siempre se ve como la portada. Por eso el botón **Compartir este evento** da `eventos.perpetuo.global/e/slug/`: una página pequeña con la imagen del evento que redirige al instante a `/#/e/slug`.
+
+La acción de GitHub `.github/workflows/previews.yml` corre `scripts/previews.py` cada 15 minutos: lee los eventos de la API, arma una imagen de 1200×630 con el póster completo sobre un fondo difuminado y sube los cambios. Un evento nuevo tarda hasta ~15 minutos (más lo que tarde Pages) en tener vista previa; para no esperar, en GitHub ve a Actions → Vistas previas de eventos → Run workflow. Los eventos sin imagen usan `assets/og.jpg`.
+
+WhatsApp guarda la vista previa de cada enlace un buen rato. Si compartiste el enlace antes de que existiera la imagen, agrégale algo al final (`?1`) para que la vuelva a leer.
 
 ## Para tener en cuenta
 - **Límite de correos.** Con una cuenta normal de Gmail, Apps Script manda como máximo unos 100 correos al día. Si un evento grande puede pasar de eso, publica el script desde una cuenta de Google Workspace (1,500 al día) o cambia `mandarBoleto_` a un servicio como Resend. En el panel, "Reenviar" sirve para volver a mandar los que fallen; la columna "Correo" dice cuáles salieron.

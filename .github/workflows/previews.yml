@@ -1,0 +1,38 @@
+name: Vistas previas de eventos
+
+# Genera /e/<slug>/ con la imagen de cada evento para que los enlaces
+# compartidos muestren su foto. Ver scripts/previews.py.
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [scripts/previews.py, .github/workflows/previews.yml, assets/logo.webp, assets/icono/**]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: previews
+  cancel-in-progress: false
+
+jobs:
+  generar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==11.0.0
+      - run: python scripts/previews.py
+      - name: Subir cambios
+        run: |
+          git add -A e assets/og.jpg
+          if git diff --cached --quiet; then echo "Sin cambios"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Vistas previas de eventos"
+          git pull --rebase
+          git push
