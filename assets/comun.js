@@ -62,7 +62,149 @@ function bicho(n) {
     `<img class="c" alt="" src="assets/partes/${n}-cuerpo.webp"></span>`;
 }
 function pintarBichos(raiz = document) {
-  raiz.querySelectorAll("[data-b]").forEach(el => { el.outerHTML = bicho(el.dataset.b); });
+  raiz.querySelectorAll("[data-b]").forEach(el => {
+    if (!("vivo" in el.dataset)) { el.outerHTML = bicho(el.dataset.b); return; }
+    const n = BICHOS[el.dataset.b] ? el.dataset.b : "punto", b = BICHOS[n];
+    const v = document.createElement("span");
+    v.className = "vivo"; v.style.setProperty("--ar", b.w + "/" + b.h);
+    v.innerHTML = `<span class="v-mov"><span class="v-cuerpo">${bicho(n)}</span></span><span class="v-sombra"></span>`;
+    el.replaceWith(v);
+    vivir(v, n, { espera: parseFloat(el.dataset.vivo) || 0 });
+  });
+}
+
+/* ---------------- muñecos vivos ----------------
+   El motor de la Exclamación de cronicas.perpetuo.global, para los cuatro signos: resortes y gravedad.
+   Cae a su lugar, respira, se mece, mira hacia el cursor y de vez en cuando salta, saluda o baila.
+   Al darle clic salta y suelta chispas de su signo. Se duerme cuando no se ve. */
+// qué pieza de assets/partes es cada extremidad: [derecha, izquierda]
+const ROLES = {
+  punto:         { brazos: [1, 0], piernas: [3, 2], chispa: "•" },
+  exclamacion:   { brazos: [0, 1], piernas: [2, 3], chispa: "!" },
+  coma:          { brazos: null,   piernas: [0, 1], chispa: "," },
+  interrogacion: { brazos: null,   piernas: [0, 1], chispa: "?" }
+};
+function vivir(el, n, { espera: retraso = 0 } = {}) {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const rol = ROLES[n] || ROLES.punto;
+  const mov = el.querySelector(".v-mov"), cuerpo = el.querySelector(".v-cuerpo"), sombra = el.querySelector(".v-sombra");
+  const cara = el.querySelector(".bicho .c"), imgs = el.querySelectorAll(".bicho .p");
+  // extremidades en orden fijo: brazo der., brazo izq., pierna der., pierna izq. (null si no hay)
+  const pieza = [...(rol.brazos || [null, null]), ...rol.piernas].map(i => i === null ? null : imgs[i]);
+  el.classList.add("anima");
+
+  const resorte = (x, k, z) => ({ x, v: 0, t: x, k, z });
+  const paso = (r, dt) => { r.v += (r.k * (r.t - r.x) - 2 * r.z * Math.sqrt(r.k) * r.v) * dt; r.x += r.v * dt; };
+  const inclina = resorte(0, 90, .5), aplasta = resorte(1, 320, .3), ola = resorte(0, 40, 1),
+        baile = resorte(0, 30, 1), zapatea = resorte(0, 40, 1), mira = resorte(0, 25, .8);
+  const pose = [resorte(0, 180, .5), resorte(0, 180, .5), resorte(0, 220, .6), resorte(0, 220, .6)];
+  const POSES = { quieto: [0, 0, 0, 0], aire: [-48, 62, 26, -26], prepara: [12, -14, 10, -8] };
+  const ponPose = k => POSES[k].forEach((a, i) => pose[i].t = a);
+
+  let W = el.offsetWidth || 60, g = W * 14, t = 0, antes = 0, activo = false, corriendo = false, visible = false;
+  let y = 0, vy = 0, alAterrizar = null;
+  const timers = [];
+  const espera = s => new Promise(r => timers.push({ en: t + s, r }));
+
+  function polvo(k){
+    for (let i = 0; i < k; i++){
+      const p = document.createElement("span"), d = W * (.06 + Math.random() * .07);
+      p.className = "v-polvo";
+      p.style.cssText = `width:${d}px;height:${d}px;left:${30 + Math.random() * 40}%`;
+      el.appendChild(p);
+      const dx = (Math.random() < .5 ? -1 : 1) * W * (.2 + Math.random() * .45), dy = -W * (.05 + Math.random() * .18);
+      p.animate([{ transform: "scale(.6)", opacity: .75 }, { transform: `translate(${dx}px,${dy}px) scale(1.7)`, opacity: 0 }],
+        { duration: 500 + Math.random() * 350, easing: "cubic-bezier(.2,.7,.3,1)" }).onfinish = () => p.remove();
+    }
+  }
+  function chispas(){
+    for (let i = 0; i < 5; i++){
+      const c = document.createElement("span"), ang = (-60 + i * 30 + (Math.random() - .5) * 14) * Math.PI / 180, dist = W * (.55 + Math.random() * .35);
+      c.className = "v-chispa"; c.textContent = rol.chispa; c.style.fontSize = W * (.2 + Math.random() * .1) + "px";
+      el.appendChild(c);
+      c.animate([
+        { transform: "translate(-50%,0) rotate(0) scale(.4)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${Math.sin(ang) * dist}px), ${-Math.cos(ang) * dist}px) rotate(${ang * 60}deg) scale(1)`, opacity: 0 }
+      ], { duration: 750, easing: "cubic-bezier(.15,.8,.3,1)" }).onfinish = () => c.remove();
+    }
+  }
+
+  async function salto(alto = 1, conChispas = false){
+    if (y > 0) return;
+    ponPose("prepara"); aplasta.t = .8;
+    await espera(.12);
+    aplasta.t = 1; aplasta.v = 9; ponPose("aire");
+    vy = Math.sqrt(2 * g * W * .55 * alto);
+    if (conChispas) chispas();
+    return new Promise(r => alAterrizar = r);
+  }
+  function aterriza(){
+    aplasta.x = .78; aplasta.v = 0; ponPose("quieto");
+    polvo(5);
+    const r = alAterrizar; alAterrizar = null; r && r();
+  }
+  const saluda = async () => { if (rol.brazos) { ola.t = 1; await espera(1.8); ola.t = 0; } else { zapatea.t = 1; await espera(1.4); zapatea.t = 0; } };
+  const bailecito = async () => { baile.t = 1; await espera(2.2); baile.t = 0; };
+
+  async function entrada(){
+    await espera(retraso);
+    W = el.offsetWidth || W; g = W * 14;
+    y = W * 1.6; vy = 0; ponPose("aire");           // cae desde arriba a su lugar
+    el.classList.add("listo");
+    await new Promise(r => alAterrizar = r);
+    await espera(.2);
+    await salto(.45);
+    const acciones = [saluda, () => salto(.7), async () => { await salto(.5); await salto(.5); }, bailecito, saluda, () => salto(1, true)];
+    for (let i = Math.floor(Math.random() * acciones.length);;){
+      await espera(2.8 + Math.random() * 3.2);
+      if (y === 0) await acciones[i++ % acciones.length]();
+    }
+  }
+
+  function cuadro(ahora){
+    if (!el.isConnected){ removeEventListener("pointermove", alMover); io.disconnect(); return; }
+    if (!activo){ corriendo = false; return; }
+    const dt = Math.min(1 / 30, antes ? (ahora - antes) / 1000 : 0); antes = ahora; t += dt;
+    for (let i = timers.length - 1; i >= 0; i--) if (t >= timers[i].en){ const r = timers[i].r; timers.splice(i, 1); r(); }
+
+    if (vy !== 0 || y > 0){
+      vy -= g * dt; y += vy * dt;
+      if (y <= 0){ y = 0; vy = 0; aterriza(); }
+      else aplasta.t = vy > 0 ? 1.08 : .97;
+    }
+    const ritmo = Math.sin(t * Math.PI * 3.4);
+    inclina.t = baile.x * ritmo * 11 + mira.x + (y > 0 ? -vy / g * 14 : 0) + Math.sin(t * 1.3) * 2.2;
+    [inclina, aplasta, ola, baile, zapatea, mira, ...pose].forEach(r => paso(r, dt));
+
+    const respira = Math.sin(t * 2.3), tap = Math.sin(t * Math.PI * 7);
+    const ang = [
+      pose[0].x + respira * 7 + ola.x * (-46 + Math.sin(t * Math.PI * 6.4) * 30) + baile.x * ritmo * 26,
+      pose[1].x - respira * 7 + baile.x * Math.sin(t * Math.PI * 3.4 + 1) * 26,
+      pose[2].x + Math.sin(t * 1.3) * 3 + zapatea.x * Math.max(0, tap) * 30 + baile.x * ritmo * 14,
+      pose[3].x - Math.sin(t * 1.3) * 3 - zapatea.x * Math.max(0, -tap) * 30 - baile.x * ritmo * 14
+    ];
+    const bob = baile.x * Math.abs(ritmo) * W * .05 + zapatea.x * Math.abs(tap) * W * .02;
+
+    cuerpo.style.transform = `translate3d(0,${-(y + bob)}px,0) rotate(${inclina.x}deg) scale(${2 - aplasta.x},${aplasta.x})`;
+    cara.style.transform = `scale(${1 - respira * .012},${1 + respira * .018})`;
+    pieza.forEach((p, i) => p && (p.style.transform = `rotate(${ang[i]}deg)`));
+    const lejos = Math.min(1, (y + bob) / (W * .9));
+    sombra.style.transform = `scale(${1 - lejos * .5})`;
+    sombra.style.opacity = 1 - lejos * .6;
+    requestAnimationFrame(cuadro);
+  }
+  const arrancar = () => { activo = visible && !document.hidden; if (!corriendo && activo){ corriendo = true; antes = 0; requestAnimationFrame(cuadro); } };
+  const io = new IntersectionObserver(es => { visible = es[0].isIntersecting; arrancar(); });
+  io.observe(el);
+  document.addEventListener("visibilitychange", arrancar);
+  function alMover(e){
+    const r = el.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2);
+    mira.t = Math.max(-7, Math.min(7, dx / 60));
+  }
+  addEventListener("pointermove", alMover, { passive: true });
+  el.addEventListener("click", ev => { ev.preventDefault(); ev.stopPropagation(); if (y === 0) salto(1.2, true); });
+  addEventListener("resize", () => { W = el.offsetWidth || W; g = W * 14; });
+  entrada();
 }
 
 /* ---------------- API ---------------- */

@@ -8,7 +8,7 @@
 <script>
 // /e/<slug> de un evento cuya página todavía no se genera → la página del evento
 var m = location.pathname.match(/^\/e\/([^\/]+)/);
-location.replace(m ? "/#/e/" + m[1] : "/");
+location.replace("/" + location.search + (m ? "#/e/" + m[1] : ""));
 </script>
 </head>
 <body style="background:#074990"></body>

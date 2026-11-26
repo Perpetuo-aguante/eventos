@@ -125,7 +125,7 @@ def pagina(e, imagen, alt):
 <meta name="twitter:image" content="{a(imagen)}">
 <meta name="theme-color" content="#074990">
 <meta http-equiv="refresh" content="0; url={a(destino)}">
-<script>location.replace({json.dumps(destino)});</script>
+<script>location.replace("/" + location.search + {json.dumps(destino[1:])});</script>
 </head>
 <body style="background:#074990;color:#FAF6F1;font-family:system-ui,sans-serif;text-align:center;padding:40px 16px">
 <p><a href="{a(destino)}" style="color:#FAF6F1">{a(e.get('titulo', 'Ver el evento'))}</a></p>

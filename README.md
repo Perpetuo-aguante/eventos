@@ -70,7 +70,7 @@ Con `sk_test_…`, compra un boleto con la tarjeta `4242 4242 4242 4242` (cualqu
 Después cambia a `sk_live_…`.
 
 ## Vista previa al compartir
-WhatsApp, iMessage, Facebook y compañía no leen lo que va después de `#`, así que un enlace `/#/e/slug` siempre se ve como la portada. Por eso el botón **Compartir este evento** da `eventos.perpetuo.global/e/slug/`: una página pequeña con la imagen del evento que redirige al instante a `/#/e/slug`.
+WhatsApp, iMessage, Facebook y compañía no leen lo que va después de `#`, así que un enlace `/#/e/slug` siempre se ve como la portada. Por eso la página de cada evento se muestra en la barra como `eventos.perpetuo.global/e/slug/` (y eso da también el botón **Compartir este evento**): una página pequeña con la imagen del evento que redirige al instante a `/#/e/slug`, y el sitio vuelve a poner `/e/slug/` en la barra. Así funciona igual si alguien copia la dirección.
 
 La acción de GitHub `.github/workflows/previews.yml` corre `scripts/previews.py` cada 15 minutos: lee los eventos de la API, arma una imagen de 1200×630 con el póster completo sobre un fondo difuminado y sube los cambios. Un evento nuevo tarda hasta ~15 minutos (más lo que tarde Pages) en tener vista previa; para no esperar, en GitHub ve a Actions → Vistas previas de eventos → Run workflow. Los eventos sin imagen usan `assets/og.jpg`.
 

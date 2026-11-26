@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<base href="/">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Eventos · Perpetuo</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -182,6 +183,7 @@ html{ scroll-behavior:smooth; }
 
 .vacio{ background:var(--papel); border-radius:6px; padding:48px 28px; text-align:center; }
 .vacio .bicho{ width:74px; margin:0 auto 14px; }
+.vacio .vivo{ width:74px; margin:0 auto 18px; --polvo:rgba(13,17,20,.18); --chispa:var(--rojo); }
 .vacio h3{ margin:0; font-size:26px; font-weight:900; letter-spacing:-.03em; }
 .vacio p{ margin:8px auto 0; max-width:40ch; color:var(--gris); }
 
@@ -210,10 +212,10 @@ html{ scroll-behavior:smooth; }
 .poster-gen{ position:absolute; inset:0; padding:26px 30px; display:flex; flex-direction:column; justify-content:space-between; }
 .poster-gen .pg-dia{ font-size:clamp(110px,22vw,210px); font-weight:900; letter-spacing:-.07em; line-height:.78; }
 .poster-gen .pg-mes{ font-size:clamp(18px,2.6vw,26px); font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
-.poster-gen .pg-bicho{ position:absolute; right:7%; bottom:-4%; width:min(30%, 190px); animation:flota 5s ease-in-out infinite; }
+.poster-gen .pg-bicho{ position:absolute; right:7%; bottom:3%; width:min(30%, 190px); }
 .poster-gen::after{ content:""; position:absolute; inset:0; pointer-events:none; opacity:.35; mix-blend-mode:soft-light;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-.poster .p-signo{ position:absolute; right:22px; bottom:-14px; width:84px; z-index:2; transform:rotate(6deg); }
+.poster .p-signo{ position:absolute; right:22px; bottom:10px; width:84px; z-index:2; }
 .det-cuerpo{ padding:34px 40px 42px; }
 @media (max-width:560px){ .det-cuerpo{ padding:26px 20px 30px; } .poster-gen{ padding:18px 20px; } }
 .det-cuerpo .cuando{ display:block; font-size:14px; font-weight:800; color:var(--azul); }
@@ -226,7 +228,7 @@ html{ scroll-behavior:smooth; }
 .meta dd{ margin:3px 0 0; font-weight:800; font-size:16.5px; line-height:1.3; }
 .meta dd::first-letter{ text-transform:uppercase; }
 .meta dd small{ display:block; font-weight:500; font-size:14px; color:var(--gris); }
-.meta dd a{ font-size:14px; font-weight:700; color:var(--azul); }
+.meta dd a{ display:block; width:fit-content; margin-top:6px; font-size:14px; font-weight:700; color:var(--azul); }
 .con{ margin-top:30px; }
 .con h2{ margin:0 0 14px; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gris); }
 .invitados{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:16px 20px; }
@@ -238,8 +240,9 @@ html{ scroll-behavior:smooth; }
 .desc a{ color:var(--azul); font-weight:700; }
 .desc{ margin-top:30px; font-size:17.5px; line-height:1.62; max-width:62ch; }
 .desc p{ margin:0 0 1em; }
-.desc > p:first-child::first-letter{ float:left; font-size:3.3em; line-height:.86; font-weight:900; margin:.06em .1em 0 0; color:var(--c); -webkit-text-stroke:0; }
-.c-lima .desc p:first-child::first-letter{ color:var(--azul); }
+.desc > p:first-child{ display:flow-root; }
+.desc:not(.sin-cap) > p:first-child::first-letter{ float:left; font-size:3.3em; line-height:.86; font-weight:900; margin:.06em .1em 0 0; color:var(--c); -webkit-text-stroke:0; }
+.c-lima .desc:not(.sin-cap) > p:first-child::first-letter{ color:var(--azul); }
 
 /* panel de compra */
 .compra{ position:sticky; top:20px; }
@@ -323,11 +326,13 @@ html{ scroll-behavior:smooth; }
 
 .esperando{ padding:70px 0 40px; text-align:center; color:var(--papel); }
 .esperando .bicho{ width:90px; margin:0 auto 22px; animation:flota 1.6s ease-in-out infinite; }
+.esperando .vivo{ width:90px; margin:0 auto 26px; }
 .esperando h1{ margin:0; font-size:clamp(32px,5vw,48px); font-weight:900; letter-spacing:-.04em; }
 .esperando p{ margin:12px auto 0; max-width:42ch; color:rgba(250,246,241,.78); }
 
 .desfile-fijo{ display:inline-flex; justify-content:center; align-items:flex-end; gap:18px; margin:44px auto 0; padding:16px 24px 12px; background:var(--papel); border-radius:4px; transform:rotate(-1deg); }
 .desfile-fijo .bicho{ height:58px; width:auto; --t:.5s; }
+.desfile-fijo .vivo{ width:auto; height:58px; aspect-ratio:var(--ar); --polvo:rgba(13,17,20,.18); --chispa:var(--rojo); }
 .desfile-fijo .bicho:nth-child(2){ --d:-.2s; } .desfile-fijo .bicho:nth-child(3){ --d:-.45s; } .desfile-fijo .bicho:nth-child(4){ --d:-.1s; }
 
 /* confeti de signos */
@@ -402,31 +407,52 @@ const color = e => "c-" + (COLORES.includes(e.color) ? e.color : "azul");
 const agotado = e => e.disponibles === 0;
 
 /* ---------------- rutas ---------------- */
+// Rutas por hash (#/e/slug, #/boleto). La página de un evento se muestra como /e/slug/ en la barra,
+// que es el enlace con vista previa (scripts/previews.py): así sirve igual si alguien copia la dirección.
 function ruta() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
   if (h.startsWith("e/")) return { vista: "detalle", slug: h.slice(2) };
   if (h === "boleto") return { vista: "boleto" };
+  const m = location.pathname.match(/^\/e\/([^\/]+)/);
+  if (m) return { vista: "detalle", slug: decodeURIComponent(m[1]) };
   return { vista: "lista" };
 }
+const urlEvento = slug => "/e/" + encodeURIComponent(slug) + "/";
 
 function pintar(animar = true) {
   const r = ruta();
+  queueMicrotask(() => { urlPintada = location.pathname + location.hash; });
   if (r.vista === "lista") vistaLista();
   else if (r.vista === "detalle") vistaDetalle(r.slug);
   else vistaBoleto();
   pintarBichos(vista);
   observar();
+  capitular();
   if (animar) { vista.classList.remove("entra"); void vista.offsetWidth; vista.classList.add("entra"); }
 }
 
-let rutaAnterior = ruta().vista;
-window.addEventListener("hashchange", () => {
+let rutaAnterior = ruta().vista, urlPintada = "";
+function alCambiarRuta() {
+  if (location.pathname + location.hash === urlPintada) return; // popstate y hashchange llegan juntos
+  urlPintada = location.pathname + location.hash;
   const r = ruta();
   if (rutaAnterior === "lista") scrollLista = scrollY;
   formTocado = false;
   const cambiar = () => { pintar(); window.scrollTo({ top: r.vista === "lista" ? scrollLista : 0, behavior: "instant" }); };
   if (document.startViewTransition && !reducido) document.startViewTransition(cambiar); else cambiar();
   rutaAnterior = r.vista;
+}
+window.addEventListener("hashchange", alCambiarRuta);
+window.addEventListener("popstate", alCambiarRuta);
+// los enlaces internos (#/…) cambian la ruta sin recargar, aunque la barra diga /e/slug/
+document.addEventListener("click", ev => {
+  const a = ev.target.closest && ev.target.closest('a[href^="#/"]');
+  if (!a || ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || a.target) return;
+  ev.preventDefault();
+  const h = a.getAttribute("href");
+  if (location.pathname === "/" && location.hash === h) return;
+  history.pushState(null, "", "/" + h);
+  alCambiarRuta();
 });
 
 /* aparición al hacer scroll */
@@ -508,7 +534,7 @@ function vistaLista() {
     </div>
     ${EVENTOS === null ? '<div class="esqueleto" style="height:420px"></div>'
       : primero ? destacado(primero)
-      : `<div class="vacio"><span data-b="interrogacion"></span><h3>Estamos tramando el próximo.</h3>
+      : `<div class="vacio"><span data-b="interrogacion" data-vivo></span><h3>Estamos tramando el próximo.</h3>
          <p>Por ahora no hay eventos abiertos. Suscríbete a <a href="https://perpetuo.global">Perpetuo</a> y te avisamos antes que a nadie.</p></div>`}
   </section>
 
@@ -526,19 +552,30 @@ function vistaLista() {
 }
 
 /* ---------------- DETALLE ---------------- */
+// La letra capitular solo si el primer párrafo ocupa al menos dos renglones; con uno solo se ve suelta.
+function capitular() {
+  const d = vista.querySelector(".desc"), p = d && d.querySelector(":scope > p:first-child");
+  if (!p) return;
+  d.classList.add("sin-cap");
+  const renglones = p.getBoundingClientRect().height / parseFloat(getComputedStyle(p).lineHeight);
+  d.classList.toggle("sin-cap", renglones < 1.5);
+}
+if (document.fonts) document.fonts.ready.then(capitular);
+let tCap; addEventListener("resize", () => { clearTimeout(tCap); tCap = setTimeout(capitular, 150); });
 function mapaDe(e) { return e.mapa || (e.direccion ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(e.lugar + ", " + e.direccion) : ""); }
 
 function vistaDetalle(slug) {
-  if (EVENTOS === null) { vista.innerHTML = '<div class="esperando"><span data-b="coma"></span><h1>Cargando…</h1></div>'; return; }
+  if (EVENTOS === null) { vista.innerHTML = '<div class="esperando"><span data-b="coma" data-vivo></span><h1>Cargando…</h1></div>'; return; }
   const e = EVENTOS.find(x => x.slug === slug);
   if (!e) {
     document.title = "Evento no encontrado · Perpetuo";
     vista.innerHTML = `<a class="volver" href="#/">${ICO.atras} Todos los eventos</a>
-      <div class="vacio"><span data-b="interrogacion"></span><h3>No encontramos ese evento.</h3><p>Quizá cambió de nombre o ya no está abierto.</p>
+      <div class="vacio"><span data-b="interrogacion" data-vivo></span><h3>No encontramos ese evento.</h3><p>Quizá cambió de nombre o ya no está abierto.</p>
       <p style="margin-top:20px"><a class="btn" href="#/">Ver eventos</a></p></div>`;
     return;
   }
   document.title = e.titulo + " · Eventos Perpetuo";
+  if (location.pathname + location.hash !== urlEvento(e.slug)) history.replaceState(null, "", urlEvento(e.slug) + location.search);
   const mapa = mapaDe(e);
   const horario = fecha.hora(e.hora) + (e.horaFin ? " a " + fecha.hora(e.horaFin) : "");
   vista.innerHTML = `
@@ -546,9 +583,9 @@ function vistaDetalle(slug) {
   <article class="det-grid ${color(e)}">
     <div class="det-hoja">
       <div class="poster${e.imagen ? " con-fondo" : ""}"${e.imagen ? ` style="--foto:url('${esc(e.imagen)}')"` : ""}>
-        ${e.imagen ? `<img class="foto" src="${esc(e.imagen)}" alt=""><span class="p-signo" aria-hidden="true"><span data-b="${esc(e.signo)}"></span></span>`
+        ${e.imagen ? `<img class="foto" src="${esc(e.imagen)}" alt=""><span class="p-signo" aria-hidden="true"><span data-b="${esc(e.signo)}" data-vivo=".5"></span></span>`
           : `<div class="poster-gen" aria-hidden="true"><span class="pg-mes">${fecha.semana(e.fecha)} · ${fecha.mes(e.fecha)}</span><span class="pg-dia">${fecha.dia(e.fecha)}</span>
-             <span class="pg-bicho"><span data-b="${esc(e.signo)}"></span></span></div>`}
+             <span class="pg-bicho"><span data-b="${esc(e.signo)}" data-vivo=".5"></span></span></div>`}
       </div>
       <div class="det-cuerpo">
         <span class="cuando">${fecha.conAnio(e.fecha)}</span>
@@ -618,7 +655,7 @@ function activarCompra(e) {
   f.addEventListener("submit", async ev => {
     ev.preventDefault();
     err.classList.remove("on", "amable");
-    const datos = { eventoId: e.id, nombre: f.nombre.value.trim(), correo: f.correo.value.trim().toLowerCase(), cantidad: n, volver: location.origin + location.pathname };
+    const datos = { eventoId: e.id, nombre: f.nombre.value.trim(), correo: f.correo.value.trim().toLowerCase(), cantidad: n, volver: location.origin + "/" };
     let ok = true;
     if (!datos.nombre) { f.querySelector('[data-f="nombre"]').classList.add("bad"); ok = false; }
     if (!correoOk(datos.correo)) { f.querySelector('[data-f="correo"]').classList.add("bad"); ok = false; }
@@ -673,7 +710,7 @@ function descargarIcs(b) {
 function vistaBoleto(esperando) {
   if (esperando) {
     document.title = "Confirmando tu pago · Perpetuo";
-    vista.innerHTML = `<div class="esperando"><span data-b="punto"></span><h1>${esperando}</h1><p>No cierres esta ventana; tarda unos segundos.</p></div>`;
+    vista.innerHTML = `<div class="esperando"><span data-b="punto" data-vivo></span><h1>${esperando}</h1><p>No cierres esta ventana; tarda unos segundos.</p></div>`;
     return;
   }
   const b = leerBoleto();
@@ -706,7 +743,7 @@ function vistaBoleto(esperando) {
       <a class="btn btn--lima" href="${esc(enlaceCalendario(e))}" target="_blank" rel="noopener">${ICO.cal} Agregar a Google Calendar</a>
       <button class="btn btn--ghost" type="button" id="ics">${ICO.baja} Descargar .ics</button>
     </div>
-    <div class="desfile-fijo" aria-hidden="true"><span data-b="punto"></span><span data-b="coma"></span><span data-b="exclamacion"></span><span data-b="interrogacion"></span></div>
+    <div class="desfile-fijo" aria-hidden="true"><span data-b="punto" data-vivo=".3"></span><span data-b="coma" data-vivo=".45"></span><span data-b="exclamacion" data-vivo=".6"></span><span data-b="interrogacion" data-vivo=".75"></span></div>
     <p style="margin-top:34px"><a class="volver" style="margin:0" href="#/">${ICO.atras} Ver otros eventos</a></p>
   </section>`;
   document.getElementById("ics").addEventListener("click", () => descargarIcs(b));
@@ -750,7 +787,7 @@ async function regresoDePago() {
     } catch (e) { console.error(e); }
     await new Promise(r => setTimeout(r, 2500));
   }
-  vista.innerHTML = `<div class="esperando"><span data-b="interrogacion"></span><h1>Tu pago se está procesando</h1>
+  vista.innerHTML = `<div class="esperando"><span data-b="interrogacion" data-vivo></span><h1>Tu pago se está procesando</h1>
     <p>Cuando Stripe lo confirme te llegará el boleto por correo. Si en una hora no lo tienes, escríbenos a <a href="mailto:general@perpetuo.global">general@perpetuo.global</a>.</p>
     <p style="margin-top:24px"><a class="btn btn--lima" href="#/">Volver a eventos</a></p></div>`;
   pintarBichos(vista);

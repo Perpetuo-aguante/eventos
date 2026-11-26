@@ -75,6 +75,17 @@ textarea.input{ resize:vertical; min-height:120px; line-height:1.5; }
 .bicho .c{ animation:bob calc(var(--t) / 2) var(--d,0s) ease-in-out infinite alternate; }
 .bicho .p{ transform-origin:var(--ox) var(--oy); animation:paso var(--t) var(--d,0s) ease-in-out infinite alternate; }
 .bicho .p.b{ animation-direction:alternate-reverse; }
+/* muñecos vivos (vivir() en comun.js) */
+.vivo{ display:block; position:relative; width:100%; cursor:pointer; -webkit-tap-highlight-color:transparent; user-select:none; --polvo:rgba(250,246,241,.9); }
+.vivo.anima:not(.listo){ visibility:hidden; }
+.v-mov, .v-cuerpo{ display:block; position:relative; z-index:1; }
+.v-cuerpo{ transform-origin:50% 100%; will-change:transform; }
+.vivo > .v-mov > .v-cuerpo > .bicho{ width:100%; height:auto; margin:0; animation:none; }
+.vivo .bicho .c, .vivo .bicho .p{ animation:none; }
+.vivo .bicho .c{ transform-origin:50% 100%; }
+.v-sombra{ position:absolute; left:18%; right:18%; bottom:-4px; height:8%; max-height:10px; border-radius:50%; background:rgba(0,0,0,.3); filter:blur(3px); }
+.v-polvo{ position:absolute; z-index:0; bottom:0; border-radius:50%; background:var(--polvo); pointer-events:none; }
+.v-chispa{ position:absolute; z-index:2; top:0; left:50%; font-weight:900; color:var(--chispa, var(--lima)); pointer-events:none; line-height:1; }
 @keyframes paso{ from{ transform:rotate(calc(var(--a) * -1)); } to{ transform:rotate(var(--a)); } }
 @keyframes bob{ from{ transform:translateY(0); } to{ transform:translateY(-2.5%); } }
 @keyframes flota{ 0%,100%{ transform:translateY(0) rotate(0); } 50%{ transform:translateY(-10px) rotate(-4deg); } }
